@@ -56,8 +56,7 @@ class _SignInPageState extends State<SignInPage> {
                         color: Colors.black.withOpacity(0.25),
                         spreadRadius: 0,
                         blurRadius: 6,
-                        offset: const Offset(
-                            0, 2), // changes the position of the shadow
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
