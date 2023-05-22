@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:stalkin/pages/home_page.dart';
+import 'package:stalkin/pages/sign_up_page.dart';
 
 import '../theme.dart';
 
@@ -124,11 +126,21 @@ class _SignInPageState extends State<SignInPage> {
                       style: regularPoppins.copyWith(
                           fontSize: 14, color: whiteColor),
                     ),
-                    Text(
-                      'sign Up',
-                      style: boldPoppins.copyWith(
-                          fontSize: 14, color: secondaryColor),
-                    )
+                    GestureDetector(
+                      onTap: () {
+                        // Handle navigation to the sign up page
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const SignUpPage()),
+                        );
+                      },
+                      child: Text(
+                        'Sign Up',
+                        style: boldPoppins.copyWith(
+                            fontSize: 14, color: secondaryColor),
+                      ),
+                    ),
                   ],
                 ),
                 Container(
@@ -148,7 +160,15 @@ class _SignInPageState extends State<SignInPage> {
                     ],
                   ),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      setState(() {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const HomePage()),
+                        );
+                      });
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: secondaryColor,
                       shape: RoundedRectangleBorder(
@@ -162,6 +182,9 @@ class _SignInPageState extends State<SignInPage> {
                       ),
                     ),
                   ),
+                ),
+                const SizedBox(
+                  height: 32,
                 ),
               ],
             ),
