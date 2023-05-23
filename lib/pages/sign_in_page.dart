@@ -19,6 +19,8 @@ class _SignInPageState extends State<SignInPage> {
   bool isPasswordValid = false;
   bool isSignIn = false;
 
+  bool _passwordVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,7 +99,7 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   child: TextField(
                     controller: passwordController,
-                    obscureText: true,
+                    obscureText: !_passwordVisible,
                     style: regularPoppins.copyWith(fontSize: 14),
                     decoration: InputDecoration(
                       filled: true,
@@ -111,6 +113,19 @@ class _SignInPageState extends State<SignInPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       hintText: "Password",
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: mainColor,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _passwordVisible = !_passwordVisible;
+                          });
+                        },
+                      ),
                     ),
                   ),
                 ),

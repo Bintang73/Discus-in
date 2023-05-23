@@ -16,6 +16,8 @@ class _SignUpPageState extends State<SignUpPage> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
+  bool _passwordVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -121,7 +123,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   child: TextField(
                     controller: passwordController,
-                    obscureText: true,
+                    obscureText: !_passwordVisible,
                     style: regularPoppins.copyWith(fontSize: 14),
                     decoration: InputDecoration(
                       filled: true,
@@ -135,6 +137,19 @@ class _SignUpPageState extends State<SignUpPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       hintText: "Password",
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: mainColor,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _passwordVisible = !_passwordVisible;
+                          });
+                        },
+                      ),
                     ),
                   ),
                 ),
@@ -157,7 +172,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   child: TextField(
                     controller: confirmPasswordController,
-                    obscureText: true,
+                    obscureText: !_passwordVisible,
                     style: regularPoppins.copyWith(fontSize: 14),
                     decoration: InputDecoration(
                       filled: true,
@@ -171,6 +186,19 @@ class _SignUpPageState extends State<SignUpPage> {
                         borderRadius: BorderRadius.circular(12),
                       ),
                       hintText: "Confirm Password",
+                      suffixIcon: IconButton(
+                        icon: Icon(
+                          _passwordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                          color: mainColor,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            _passwordVisible = !_passwordVisible;
+                          });
+                        },
+                      ),
                     ),
                   ),
                 ),
