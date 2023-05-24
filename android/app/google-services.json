@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "649825161135",
+    "project_id": "stalkin-e5344",
+    "storage_bucket": "stalkin-e5344.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:649825161135:android:0825f5969bcc11e767295a",
+        "android_client_info": {
+          "package_name": "com.example.stalkin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "649825161135-0r4ba12855qbj63s31e1feoftlsd98dh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBpaBSzYyTCWnoFgHv0UeytcCl-k1idBD8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "649825161135-0r4ba12855qbj63s31e1feoftlsd98dh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
