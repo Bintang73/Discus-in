@@ -1,5 +1,5 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stalkin/pages/home_page.dart';
 import 'package:stalkin/pages/sign_up_page.dart';
 
 import '../theme.dart';
@@ -12,14 +12,28 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-
-  bool isEmailValid = false;
-  bool isPasswordValid = false;
-  bool isSignIn = false;
+  // text controller
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
   bool _passwordVisible = false;
+
+  Future signIn() async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: _emailController.text.trim(),
+      password: _passwordController.text.trim(),
+    );
+  }
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+  // bool isEmailValid = false;
+  // bool isPasswordValid = false;
+  // bool isSignIn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +77,7 @@ class _SignInPageState extends State<SignInPage> {
                     ],
                   ),
                   child: TextField(
-                    controller: emailController,
+                    controller: _emailController,
                     style: regularPoppins.copyWith(fontSize: 14),
                     decoration: InputDecoration(
                       filled: true,
@@ -98,7 +112,7 @@ class _SignInPageState extends State<SignInPage> {
                     ],
                   ),
                   child: TextField(
-                    controller: passwordController,
+                    controller: _passwordController,
                     obscureText: !_passwordVisible,
                     style: regularPoppins.copyWith(fontSize: 14),
                     decoration: InputDecoration(
@@ -175,13 +189,20 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-                      setState(() {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const HomePage()),
-                        );
-                      });
+                      if (_emailController.text.isEmpty ||
+                          _passwordController.text.isEmpty) {
+                        // Display an error message or handle the case when the TextField is blank
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                            'Masukkan Email & Password!',
+                            style: semiPoppins,
+                          ),
+                          backgroundColor: Colors.red,
+                        ));
+                      } else {
+                        // TextField has a value, perform the desired action
+                        signIn();
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: secondaryColor,

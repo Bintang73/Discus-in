@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/pages/sign_in_page.dart';
 
@@ -9,6 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final user = FirebaseAuth.instance.currentUser!;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,19 +18,13 @@ class _HomePageState extends State<HomePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Home'),
+            Text('signed in as: ${user.email!}'),
             const SizedBox(
               height: 50,
             ),
             ElevatedButton(
                 onPressed: () {
-                  setState(() {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const SignInPage()),
-                    );
-                  });
+                  FirebaseAuth.instance.signOut();
                 },
                 child: const Text('LogOut'))
           ],
