@@ -1,7 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:stalkin/pages/main_page.dart';
-import 'package:stalkin/pages/sign_in_page.dart';
+import 'package:stalkin/auth/main_page.dart';
 import 'firebase_options.dart';
 
 void main() async {

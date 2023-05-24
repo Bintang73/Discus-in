@@ -1,22 +1,80 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stalkin/pages/sign_in_page.dart';
 
 import '../theme.dart';
 
 class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+  final VoidCallback showLoginPage;
+  const SignUpPage({super.key, required this.showLoginPage});
 
   @override
   State<SignUpPage> createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  TextEditingController nameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+  // final _nameController = TextEditingController();
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _confirmPasswordController = TextEditingController();
 
   bool _passwordVisible = false;
+
+  @override
+  void dispose() {
+    // _nameController.dispose();
+    _emailController.dispose();
+    _passwordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  Future signUp() async {
+    // loading circle
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    try {
+      if (isPasswordConfirmed()) {
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            'Password tidak sama',
+            style: semiPoppins,
+          ),
+          backgroundColor: Colors.red,
+        ));
+      }
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          e.code,
+          style: semiPoppins,
+        ),
+        backgroundColor: Colors.red,
+      ));
+    }
+    // ignore: use_build_context_synchronously
+    Navigator.of(context).pop();
+  }
+
+  bool isPasswordConfirmed() {
+    if (_passwordController.text.trim() ==
+        _confirmPasswordController.text.trim()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,23 +109,23 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ],
                   ),
-                  child: TextField(
-                    controller: nameController,
-                    style: regularPoppins.copyWith(fontSize: 14),
-                    decoration: InputDecoration(
-                      filled: true,
-                      fillColor: whiteColor,
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                        borderSide:
-                            BorderSide(color: secondaryColor, width: 2.0),
-                      ),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      hintText: "Name",
-                    ),
-                  ),
+                  // child: TextField(
+                  //   controller: _nameController,
+                  //   style: regularPoppins.copyWith(fontSize: 14),
+                  //   decoration: InputDecoration(
+                  //     filled: true,
+                  //     fillColor: whiteColor,
+                  //     focusedBorder: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(12),
+                  //       borderSide:
+                  //           BorderSide(color: secondaryColor, width: 2.0),
+                  //     ),
+                  //     border: OutlineInputBorder(
+                  //       borderRadius: BorderRadius.circular(12),
+                  //     ),
+                  //     hintText: "Name",
+                  //   ),
+                  // ),
                 ),
                 const SizedBox(
                   height: 24,
@@ -87,7 +145,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ],
                   ),
                   child: TextField(
-                    controller: emailController,
+                    controller: _emailController,
                     style: regularPoppins.copyWith(fontSize: 14),
                     decoration: InputDecoration(
                       filled: true,
@@ -122,7 +180,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ],
                   ),
                   child: TextField(
-                    controller: passwordController,
+                    controller: _passwordController,
                     obscureText: !_passwordVisible,
                     style: regularPoppins.copyWith(fontSize: 14),
                     decoration: InputDecoration(
@@ -171,7 +229,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ],
                   ),
                   child: TextField(
-                    controller: confirmPasswordController,
+                    controller: _confirmPasswordController,
                     obscureText: !_passwordVisible,
                     style: regularPoppins.copyWith(fontSize: 14),
                     decoration: InputDecoration(
@@ -214,14 +272,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           fontSize: 14, color: whiteColor),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        // Handle navigation to the sign up page
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignInPage()),
-                        );
-                      },
+                      onTap: widget.showLoginPage,
                       child: Text(
                         'Sign In',
                         style: boldPoppins.copyWith(
@@ -248,13 +299,20 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   child: ElevatedButton(
                     onPressed: () {
-                      setState(() {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignInPage()),
-                        );
-                      });
+                      if (_emailController.text.isEmpty ||
+                          _passwordController.text.isEmpty) {
+                        // Display an error message or handle the case when the TextField is blank
+                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                          content: Text(
+                            'Masukkan Email & Password!',
+                            style: semiPoppins,
+                          ),
+                          backgroundColor: Colors.red,
+                        ));
+                      } else {
+                        // TextField has a value, perform the desired action
+                        signUp();
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: secondaryColor,

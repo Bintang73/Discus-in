@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stalkin/pages/sign_in_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,6 +18,7 @@ class _HomePageState extends State<HomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text('signed in as: ${user.email!}'),
+            Text('userId: ${user.uid}'),
             const SizedBox(
               height: 50,
             ),

@@ -1,11 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stalkin/pages/sign_up_page.dart';
 
 import '../theme.dart';
 
 class SignInPage extends StatefulWidget {
-  const SignInPage({super.key});
+  final VoidCallback showRegisterPage;
+  const SignInPage({super.key, required this.showRegisterPage});
 
   @override
   State<SignInPage> createState() => _SignInPageState();
@@ -19,10 +19,33 @@ class _SignInPageState extends State<SignInPage> {
   bool _passwordVisible = false;
 
   Future signIn() async {
-    await FirebaseAuth.instance.signInWithEmailAndPassword(
-      email: _emailController.text.trim(),
-      password: _passwordController.text.trim(),
+    // loading circle
+    showDialog(
+      context: context,
+      builder: (context) {
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      },
     );
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim(),
+      );
+    } on FirebaseAuthException catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(
+          e.code,
+          style: semiPoppins,
+        ),
+        backgroundColor: Colors.red,
+      ));
+    }
+
+    // ignore: use_build_context_synchronously
+    Navigator.of(context).pop();
   }
 
   @override
@@ -155,14 +178,7 @@ class _SignInPageState extends State<SignInPage> {
                           fontSize: 14, color: whiteColor),
                     ),
                     GestureDetector(
-                      onTap: () {
-                        // Handle navigation to the sign up page
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => const SignUpPage()),
-                        );
-                      },
+                      onTap: widget.showRegisterPage,
                       child: Text(
                         'Sign Up',
                         style: boldPoppins.copyWith(
