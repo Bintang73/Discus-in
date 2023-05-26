@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:slider_captcha/slider_captcha.dart';
 
 import '../theme.dart';
 
@@ -12,14 +13,83 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
-  // text controller
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final SliderController _sliderController = SliderController();
 
+  bool _showSliderCaptcha = true;
   bool _passwordVisible = false;
 
-  Future signIn() async {
-    // loading circle
+  void _handleSliderCaptchaResult(bool result) {
+    setState(() {
+      _showSliderCaptcha = false; // Close the SliderCaptcha
+    });
+
+    if (result) {
+      _signIn(); // Auto-login if the SliderCaptcha result is true
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Puzzle Chapctha Invalid!',
+            style: semiPoppins,
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  void _showSliderCaptchaDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: SliderCaptcha(
+            controller: _sliderController,
+            image: Image.asset(
+              'assets/capctha/1.jpg',
+              fit: BoxFit.fitWidth,
+            ),
+            colorBar: Colors.blue,
+            colorCaptChar: Colors.blue,
+            onConfirm: (values) async {
+              debugPrint(values.toString());
+              await Future.delayed(const Duration(seconds: 3));
+              _sliderController.create.call();
+              if (values == true) {
+                _handleSliderCaptchaResult(true);
+                /*ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Puzzle Chapctha Success!',
+                      style: semiPoppins,
+                    ),
+                    backgroundColor: Colors.green,
+                  ),
+                );*/
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop();
+              } else {
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Puzzle Chapctha Invalid!',
+                      style: semiPoppins,
+                    ),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _signIn() async {
     showDialog(
       context: context,
       builder: (context) {
@@ -35,13 +105,16 @@ class _SignInPageState extends State<SignInPage> {
         password: _passwordController.text.trim(),
       );
     } on FirebaseAuthException catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text(
-          e.code,
-          style: semiPoppins,
+      _showSliderCaptcha = true;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.code,
+            style: semiPoppins,
+          ),
+          backgroundColor: Colors.red,
         ),
-        backgroundColor: Colors.red,
-      ));
+      );
     }
 
     // ignore: use_build_context_synchronously
@@ -54,9 +127,6 @@ class _SignInPageState extends State<SignInPage> {
     _passwordController.dispose();
     super.dispose();
   }
-  // bool isEmailValid = false;
-  // bool isPasswordValid = false;
-  // bool isSignIn = false;
 
   @override
   Widget build(BuildContext context) {
@@ -76,8 +146,10 @@ class _SignInPageState extends State<SignInPage> {
                 Container(
                   height: 151,
                   decoration: const BoxDecoration(
-                      image: DecorationImage(
-                          image: AssetImage('assets/logo.png'))),
+                    image: DecorationImage(
+                      image: AssetImage('assets/logo.png'),
+                    ),
+                  ),
                 ),
                 Container(
                   margin: const EdgeInsets.only(top: 34, bottom: 120),
@@ -129,8 +201,7 @@ class _SignInPageState extends State<SignInPage> {
                         color: Colors.black.withOpacity(0.25),
                         spreadRadius: 0,
                         blurRadius: 6,
-                        offset: const Offset(
-                            0, 2), // changes the position of the shadow
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
@@ -198,8 +269,7 @@ class _SignInPageState extends State<SignInPage> {
                         color: Colors.black.withOpacity(0.25),
                         spreadRadius: 0,
                         blurRadius: 6,
-                        offset: const Offset(
-                            0, 2), // changes the position of the shadow
+                        offset: const Offset(0, 2),
                       ),
                     ],
                   ),
@@ -207,17 +277,21 @@ class _SignInPageState extends State<SignInPage> {
                     onPressed: () {
                       if (_emailController.text.isEmpty ||
                           _passwordController.text.isEmpty) {
-                        // Display an error message or handle the case when the TextField is blank
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                            'Masukkan Email & Password!',
-                            style: semiPoppins,
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Masukkan Email & Password!',
+                              style: semiPoppins,
+                            ),
+                            backgroundColor: Colors.red,
                           ),
-                          backgroundColor: Colors.red,
-                        ));
+                        );
                       } else {
-                        // TextField has a value, perform the desired action
-                        signIn();
+                        if (!_showSliderCaptcha) {
+                          _signIn();
+                        } else {
+                          _showSliderCaptchaDialog();
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(

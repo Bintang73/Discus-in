@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:slider_captcha/slider_captcha.dart';
 
 import '../theme.dart';
 
@@ -16,9 +17,10 @@ class _SignUpPageState extends State<SignUpPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
+  final SliderController _sliderController = SliderController();
 
+  bool _showSliderCaptcha = true;
   bool _passwordVisible = false;
-
   @override
   void dispose() {
     // _nameController.dispose();
@@ -28,7 +30,27 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-  Future signUp() async {
+  void _handleSliderCaptchaResult(bool result) {
+    setState(() {
+      _showSliderCaptcha = false; // Close the SliderCaptcha
+    });
+
+    if (result) {
+      _signUp(); // Auto-login if the SliderCaptcha result is true
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Puzzle Chapctha Invalid!',
+            style: semiPoppins,
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
+  Future _signUp() async {
     // loading circle
     showDialog(
       context: context,
@@ -74,6 +96,55 @@ class _SignUpPageState extends State<SignUpPage> {
     } else {
       return false;
     }
+  }
+
+  void _showSliderCaptchaDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: SliderCaptcha(
+            controller: _sliderController,
+            image: Image.asset(
+              'assets/capctha/1.jpg',
+              fit: BoxFit.fitWidth,
+            ),
+            colorBar: Colors.blue,
+            colorCaptChar: Colors.blue,
+            onConfirm: (values) async {
+              debugPrint(values.toString());
+              await Future.delayed(const Duration(seconds: 3));
+              _sliderController.create.call();
+              if (values == true) {
+                _handleSliderCaptchaResult(true);
+                /*ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Puzzle Chapctha Success!',
+                      style: semiPoppins,
+                    ),
+                    backgroundColor: Colors.green,
+                  ),
+                );*/
+                // ignore: use_build_context_synchronously
+                Navigator.of(context).pop();
+              } else {
+                // ignore: use_build_context_synchronously
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      'Puzzle Chapctha Invalid!',
+                      style: semiPoppins,
+                    ),
+                    backgroundColor: Colors.red,
+                  ),
+                );
+              }
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -301,17 +372,21 @@ class _SignUpPageState extends State<SignUpPage> {
                     onPressed: () {
                       if (_emailController.text.isEmpty ||
                           _passwordController.text.isEmpty) {
-                        // Display an error message or handle the case when the TextField is blank
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(
-                            'Masukkan Email & Password!',
-                            style: semiPoppins,
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Masukkan Email & Password!',
+                              style: semiPoppins,
+                            ),
+                            backgroundColor: Colors.red,
                           ),
-                          backgroundColor: Colors.red,
-                        ));
+                        );
                       } else {
-                        // TextField has a value, perform the desired action
-                        signUp();
+                        if (!_showSliderCaptcha) {
+                          _signUp();
+                        } else {
+                          _showSliderCaptchaDialog();
+                        }
                       }
                     },
                     style: ElevatedButton.styleFrom(
