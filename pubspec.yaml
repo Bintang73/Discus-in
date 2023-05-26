@@ -36,6 +36,7 @@ dependencies:
   flutter_launcher_icons: ^0.13.1
   flutter_native_splash: ^2.2.19
   google_fonts: ^4.0.4
+  google_nav_bar: ^5.0.6
   slider_captcha: ^1.0.0
 
 dev_dependencies:

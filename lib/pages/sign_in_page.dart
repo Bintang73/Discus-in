@@ -115,10 +115,9 @@ class _SignInPageState extends State<SignInPage> {
           backgroundColor: Colors.red,
         ),
       );
+    } finally {
+      Navigator.of(context).pop();
     }
-
-    // ignore: use_build_context_synchronously
-    Navigator.of(context).pop();
   }
 
   @override

@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:stalkin/pages/home_page.dart';
+import 'package:stalkin/pages/button_navigasi.dart';
 
 import 'auth_page.dart';
 
@@ -14,7 +14,7 @@ class MainPage extends StatelessWidget {
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            return const HomePage();
+            return const MyNavigation();
           } else {
             return const AuthPage();
           }
