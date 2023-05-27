@@ -127,7 +127,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 titleStyle: semiPoppins,
                 controller: _sliderController,
                 image: Image.asset(
-                  'assets/capctha/1.jpg',
+                  'assets/captcha/1.jpg',
                   fit: BoxFit.fitWidth,
                 ),
                 colorBar: secondaryColor,

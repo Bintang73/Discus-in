@@ -25,6 +25,7 @@ class _MyNavigationState extends State<MyNavigation> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: mainColor,
       body: myMenu[currentIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
