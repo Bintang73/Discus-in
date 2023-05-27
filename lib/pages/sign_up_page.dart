@@ -103,44 +103,62 @@ class _SignUpPageState extends State<SignUpPage> {
       context: context,
       builder: (BuildContext context) {
         return Dialog(
-          child: SliderCaptcha(
-            controller: _sliderController,
-            image: Image.asset(
-              'assets/capctha/1.jpg',
-              fit: BoxFit.fitWidth,
+          backgroundColor: Colors.transparent,
+          child: ClipRRect(
+            borderRadius:
+                BorderRadius.circular(12), // Specify the border radius here
+            child: Container(
+              decoration: BoxDecoration(
+                color: secondaryColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.25),
+                    spreadRadius: 0,
+                    blurRadius: 6,
+                    offset: const Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: SliderCaptcha(
+                icon: const Icon(
+                  Icons.arrow_forward_ios,
+                ),
+                title: 'Geser untuk verifikasi',
+                titleStyle: semiPoppins,
+                controller: _sliderController,
+                image: Image.asset(
+                  'assets/capctha/1.jpg',
+                  fit: BoxFit.fitWidth,
+                ),
+                colorBar: secondaryColor,
+                colorCaptChar: secondaryColor,
+                onConfirm: (values) async {
+                  debugPrint(
+                    values.toString(),
+                  );
+                  await Future.delayed(
+                    const Duration(seconds: 1),
+                  );
+                  _sliderController.create.call();
+                  if (values == true) {
+                    // ignore: use_build_context_synchronously
+                    Navigator.of(context).pop();
+                    _handleSliderCaptchaResult(true);
+                  } else {
+                    // ignore: use_build_context_synchronously
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          'Puzzle Chapctha Invalid!',
+                          style: semiPoppins,
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                },
+              ),
             ),
-            colorBar: Colors.blue,
-            colorCaptChar: Colors.blue,
-            onConfirm: (values) async {
-              debugPrint(values.toString());
-              await Future.delayed(const Duration(seconds: 3));
-              _sliderController.create.call();
-              if (values == true) {
-                _handleSliderCaptchaResult(true);
-                /*ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Puzzle Chapctha Success!',
-                      style: semiPoppins,
-                    ),
-                    backgroundColor: Colors.green,
-                  ),
-                );*/
-                // ignore: use_build_context_synchronously
-                Navigator.of(context).pop();
-              } else {
-                // ignore: use_build_context_synchronously
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      'Puzzle Chapctha Invalid!',
-                      style: semiPoppins,
-                    ),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }
-            },
           ),
         );
       },
