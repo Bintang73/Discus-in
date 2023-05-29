@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:stalkin/models/notification.dart';
+import 'package:stalkin/widgets/notification_card.dart';
 import '../theme.dart';
 
 class NotificationPage extends StatefulWidget {
@@ -10,6 +11,7 @@ class NotificationPage extends StatefulWidget {
 }
 
 class _NotificationPageState extends State<NotificationPage> {
+  final balas = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -51,12 +53,36 @@ class _NotificationPageState extends State<NotificationPage> {
                 const SizedBox(height: 38),
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Text(
-                    'Test',
-                    style:
-                        semiPoppins.copyWith(fontSize: 24, color: whiteColor),
+                  child: Column(
+                    children: [
+                      NotificationUser(
+                        Notifications(
+                          idNotif: 1,
+                          message: 'Anda punya pertanyaan baru!',
+                        ),
+                      ),
+                      NotificationUser(
+                        Notifications(
+                          idNotif: 2,
+                          message: 'Pertanyaan Anda dijawab!',
+                        ),
+                      ),
+                      NotificationUser(
+                        Notifications(
+                          idNotif: 1,
+                          message: 'Anda punya pertanyaan baru!',
+                        ),
+                      ),
+                      NotificationUser(
+                        Notifications(
+                          idNotif: 2,
+                          message: 'Pertanyaan Anda dijawab!',
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+
                 // Add your remaining ListView children here
               ]),
             ),

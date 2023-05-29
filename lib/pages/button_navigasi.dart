@@ -42,7 +42,7 @@ class _MyNavigationState extends State<MyNavigation> {
           ],
         ),
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 20),
+          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
           child: GNav(
             onTabChange: (value) {
               setState(() {

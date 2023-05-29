@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:stalkin/models/news.dart';
+import 'package:stalkin/models/question.dart';
 import 'package:stalkin/widgets/news_card.dart';
 import 'package:stalkin/widgets/question_card.dart';
 
@@ -68,35 +70,44 @@ class _HomePageState extends State<HomePage> {
                   height: 250,
                   child: ListView(
                     scrollDirection: Axis.horizontal,
-                    children: const [
-                      SizedBox(
+                    children: [
+                      const SizedBox(
                         width: 32,
                       ),
                       NewsCard(
-                          idData: 1,
-                          title:
-                              'Puan Bertemu Gibran di Solo, Jalan-jalan di Mal hingga Makan Malam',
-                          imageUrl:
-                              'https://akcdn.detik.net.id/visual/2023/05/27/puan-bertemu-gibran_169.jpeg?w=360&q=90'),
-                      SizedBox(
+                        News(
+                            idData: 1,
+                            title:
+                                'Puan Bertemu Gibran di Solo, Jalan-jalan di Mal hingga Makan Malam',
+                            imageUrl:
+                                'https://akcdn.detik.net.id/visual/2023/05/27/puan-bertemu-gibran_169.jpeg?w=360&q=90'),
+                      ),
+                      const SizedBox(
                         width: 20,
                       ),
                       NewsCard(
-                          idData: 2,
-                          title:
-                              '14 KK Dievakuasi Imbas Tanah Geser Bulukumba, Pakar Jelaskan Sebabnya',
-                          imageUrl:
-                              'https://akcdn.detik.net.id/visual/2021/01/28/ilustrasi-sesar-ilustrasi-patahan-ilustrasi-tanah-bergerak_169.jpeg?w=360&q=90'),
-                      SizedBox(
+                        News(
+                            idData: 2,
+                            title:
+                                '14 KK Dievakuasi Imbas Tanah Geser Bulukumba, Pakar Jelaskan Sebabnya',
+                            imageUrl:
+                                'https://akcdn.detik.net.id/visual/2021/01/28/ilustrasi-sesar-ilustrasi-patahan-ilustrasi-tanah-bergerak_169.jpeg?w=360&q=90'),
+                      ),
+                      const SizedBox(
                         width: 20,
                       ),
                       NewsCard(
-                          idData: 3,
-                          title:
-                              'Polda Metro Bakal Kembali Gelar Street Race Awal Juni',
-                          imageUrl:
-                              'https://akcdn.detik.net.id/visual/2022/09/03/gelaran-street-race-pmj-kembali-digelar-9_169.jpeg?w=360&q=90'),
-                      SizedBox(
+                        News(
+                            idData: 3,
+                            title:
+                                'Polda Metro Bakal Kembali Gelar Street Race Awal Juni',
+                            imageUrl:
+                                'https://akcdn.detik.net.id/visual/2022/09/03/gelaran-street-race-pmj-kembali-digelar-9_169.jpeg?w=360&q=90'),
+                      ),
+                      const SizedBox(
+                        width: 20,
+                      ),
+                      const SizedBox(
                         width: 32,
                       ),
                     ],
@@ -116,26 +127,44 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 16,
                 ),
-                const QuestionCart(
+                QuestionCart(
+                  Questions(
                     idQuestion: 1,
-                    question:
-                        'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
-                    urlQuestion: 'tes'),
+                    question: "Pertanyaan 1",
+                    urlQuestion: 'urlQuestion',
+                  ),
+                ),
                 const SizedBox(
                   height: 16,
                 ),
 
-                const QuestionCart(
+                QuestionCart(
+                  Questions(
                     idQuestion: 2,
-                    question: 'Pertanyaan 2',
-                    urlQuestion: 'tes'),
+                    question: "Pertanyaan 2",
+                    urlQuestion: 'urlQuestion',
+                  ),
+                ),
                 const SizedBox(
                   height: 16,
                 ),
-                const QuestionCart(
+                QuestionCart(
+                  Questions(
                     idQuestion: 3,
-                    question: 'Pertanyaan 3',
-                    urlQuestion: 'tes'),
+                    question: "Pertanyaan 3",
+                    urlQuestion: 'urlQuestion',
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                QuestionCart(
+                  Questions(
+                    idQuestion: 3,
+                    question: "Hai apa kabar?",
+                    urlQuestion: 'urlQuestion',
+                  ),
+                ),
                 const SizedBox(
                   height: 16,
                 ),

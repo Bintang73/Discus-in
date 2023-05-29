@@ -1,17 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:stalkin/models/news.dart';
 import 'package:stalkin/theme.dart';
 
 class NewsCard extends StatelessWidget {
-  final int idData;
-  final String title;
-  final String imageUrl;
+  final News news;
 
-  const NewsCard({
-    Key? key,
-    required this.idData,
-    required this.title,
-    required this.imageUrl,
-  }) : super(key: key);
+  const NewsCard(this.news, {super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +30,7 @@ class NewsCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Image.network(
-                imageUrl,
+                news.imageUrl,
                 height: 130,
                 width: 325,
                 fit: BoxFit.cover,
@@ -44,7 +38,7 @@ class NewsCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Text(
-                  title,
+                  news.title,
                   style: regularPoppins.copyWith(fontSize: 12),
                   textAlign: TextAlign.center,
                 ),
