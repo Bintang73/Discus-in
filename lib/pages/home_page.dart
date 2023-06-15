@@ -1,9 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/news.dart';
-import 'package:stalkin/models/question.dart';
 import 'package:stalkin/widgets/news_card.dart';
-import 'package:stalkin/widgets/question_card.dart';
 
 import '../theme.dart';
 
@@ -119,7 +117,7 @@ class _HomePageState extends State<HomePage> {
                 Container(
                   margin: const EdgeInsets.symmetric(horizontal: 32),
                   child: Text(
-                    'Questions',
+                    'Topik',
                     style:
                         semiPoppins.copyWith(fontSize: 24, color: whiteColor),
                   ),
@@ -127,50 +125,7 @@ class _HomePageState extends State<HomePage> {
                 const SizedBox(
                   height: 16,
                 ),
-                QuestionCart(
-                  Questions(
-                    idQuestion: 1,
-                    question: "Pertanyaan 1",
-                    urlQuestion: 'urlQuestion',
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
 
-                QuestionCart(
-                  Questions(
-                    idQuestion: 2,
-                    question: "Pertanyaan 2",
-                    urlQuestion: 'urlQuestion',
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                QuestionCart(
-                  Questions(
-                    idQuestion: 3,
-                    question: "Pertanyaan 3",
-                    urlQuestion: 'urlQuestion',
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                QuestionCart(
-                  Questions(
-                    idQuestion: 3,
-                    question: "Hai apa kabar?",
-                    urlQuestion: 'urlQuestion',
-                  ),
-                ),
-                const SizedBox(
-                  height: 16,
-                ),
-                const SizedBox(
-                  height: 38,
-                ),
                 // Add your remaining ListView children here
               ]),
             ),

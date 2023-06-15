@@ -171,7 +171,7 @@ class _SignInPageState extends State<SignInPage> {
                 Container(
                   margin: const EdgeInsets.only(top: 34, bottom: 120),
                   child: Text(
-                    'Stalk-in',
+                    'Discus-in',
                     style: logoText.copyWith(fontSize: 32, color: whiteColor),
                   ),
                 ),

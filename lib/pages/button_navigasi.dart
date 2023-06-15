@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:stalkin/pages/home_page.dart';
 import 'package:stalkin/pages/notification_page.dart';
+import 'package:stalkin/pages/post_page.dart';
 import 'package:stalkin/pages/profile_page.dart';
 import 'package:stalkin/pages/search_page.dart';
 
@@ -19,6 +20,7 @@ class _MyNavigationState extends State<MyNavigation> {
   List myMenu = const [
     HomePage(),
     SearchPage(),
+    PostPage(),
     NotificationPage(),
     ProfilePage()
   ];
@@ -51,8 +53,8 @@ class _MyNavigationState extends State<MyNavigation> {
             },
             backgroundColor: whiteColor,
             color: greyColor,
-            activeColor: whiteColor,
-            tabBackgroundColor: mainColor,
+            activeColor: blackColor,
+            tabBackgroundColor: secondaryColor,
             padding: const EdgeInsets.all(16),
             gap: 8,
             tabs: const [
@@ -63,6 +65,10 @@ class _MyNavigationState extends State<MyNavigation> {
               GButton(
                 icon: Icons.search,
                 text: 'Search',
+              ),
+              GButton(
+                icon: Icons.add,
+                text: 'Post',
               ),
               GButton(
                 icon: Icons.notifications,

@@ -49,25 +49,103 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             SliverList(
               delegate: SliverChildListDelegate([
-                const SizedBox(height: 38),
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 32),
-                  width: double.infinity,
-                  height: 40,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      FirebaseAuth.instance.signOut();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: secondaryColor,
-                    ),
-                    child: Text(
-                      'Log Out',
-                      style: semiPoppins.copyWith(
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
+                  margin: const EdgeInsets.only(top: 38),
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 28),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: whiteColor,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            height: 286,
+                            child: Column(
+                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.only(
+                                          top: 10, left: 8, right: 8),
+                                      child: GestureDetector(
+                                        onTap: () {},
+                                        child: const Icon(
+                                          Icons.settings,
+                                          size: 30,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 36),
+                                      // color: Colors.red,
+                                      width: double.infinity,
+                                      child: Column(
+                                        children: [
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(100),
+                                            child: Image.asset(
+                                              'assets/captcha/1.jpg',
+                                              height: 80,
+                                              width: 80,
+                                              fit: BoxFit.cover,
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.symmetric(
+                                                vertical: 12),
+                                            child: Text(
+                                              'Anton Subroto',
+                                              style: semiPoppins.copyWith(
+                                                  fontSize: 16),
+                                            ),
+                                          ),
+                                          Container(
+                                            margin: const EdgeInsets.only(
+                                                bottom: 18),
+                                            child: Text(
+                                              '"Lorem Ipsum is simply dummy text of the printing and typesetting industry."',
+                                              textAlign: TextAlign.center,
+                                              style: regularPoppins.copyWith(
+                                                  fontSize: 12),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: double.infinity,
+                                            child: ElevatedButton(
+                                              onPressed: () {
+                                                FirebaseAuth.instance.signOut();
+                                              },
+                                              style: ElevatedButton.styleFrom(
+                                                backgroundColor: secondaryColor,
+                                              ),
+                                              child: Text(
+                                                'Log Out',
+                                                style: semiPoppins.copyWith(
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      )),
                 ),
                 // Add your remaining ListView children here
               ]),
