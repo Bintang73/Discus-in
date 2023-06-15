@@ -60,23 +60,18 @@ class _MyNavigationState extends State<MyNavigation> {
             tabs: const [
               GButton(
                 icon: Icons.home,
-                text: 'Home',
               ),
               GButton(
                 icon: Icons.search,
-                text: 'Search',
               ),
               GButton(
                 icon: Icons.add,
-                text: 'Post',
               ),
               GButton(
                 icon: Icons.notifications,
-                text: 'Notification',
               ),
               GButton(
                 icon: Icons.person,
-                text: 'Profile',
               ),
             ],
           ),
