@@ -16,22 +16,23 @@ class _NotificationPageState extends State<NotificationPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: mainColor,
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              backgroundColor: whiteColor,
-              elevation: 2,
-              pinned: true,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(28),
-                  bottomRight: Radius.circular(28),
-                ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: whiteColor,
+            elevation: 2,
+            pinned: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(28),
+                bottomRight: Radius.circular(28),
               ),
-              toolbarHeight: 70, // Adjust the desired height here
-              flexibleSpace: FlexibleSpaceBar(
-                background: Column(
+            ),
+            toolbarHeight: 70, // Adjust the desired height here
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                margin: const EdgeInsets.only(top: 25),
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment
                       .start, // Aligns the text vertically at the center
@@ -48,46 +49,46 @@ class _NotificationPageState extends State<NotificationPage> {
                 ),
               ),
             ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                const SizedBox(height: 38),
-                Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 32),
-                  child: Column(
-                    children: [
-                      NotificationUser(
-                        Notifications(
-                          idNotif: 1,
-                          message: 'Anda punya pertanyaan baru!',
-                        ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              const SizedBox(height: 38),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 32),
+                child: Column(
+                  children: [
+                    NotificationUser(
+                      Notifications(
+                        idNotif: 1,
+                        message: 'Anda punya pertanyaan baru!',
                       ),
-                      NotificationUser(
-                        Notifications(
-                          idNotif: 2,
-                          message: 'Pertanyaan Anda dijawab!',
-                        ),
+                    ),
+                    NotificationUser(
+                      Notifications(
+                        idNotif: 2,
+                        message: 'Pertanyaan Anda dijawab!',
                       ),
-                      NotificationUser(
-                        Notifications(
-                          idNotif: 1,
-                          message: 'Anda punya pertanyaan baru!',
-                        ),
+                    ),
+                    NotificationUser(
+                      Notifications(
+                        idNotif: 1,
+                        message: 'Anda punya pertanyaan baru!',
                       ),
-                      NotificationUser(
-                        Notifications(
-                          idNotif: 2,
-                          message: 'Pertanyaan Anda dijawab!',
-                        ),
+                    ),
+                    NotificationUser(
+                      Notifications(
+                        idNotif: 2,
+                        message: 'Pertanyaan Anda dijawab!',
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
+              ),
 
-                // Add your remaining ListView children here
-              ]),
-            ),
-          ],
-        ),
+              // Add your remaining ListView children here
+            ]),
+          ),
+        ],
       ),
     );
   }

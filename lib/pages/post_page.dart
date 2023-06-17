@@ -14,22 +14,23 @@ class _PostPageState extends State<PostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: mainColor,
-      body: SafeArea(
-        child: CustomScrollView(
-          slivers: [
-            SliverAppBar(
-              backgroundColor: whiteColor,
-              elevation: 2,
-              pinned: true,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(28),
-                  bottomRight: Radius.circular(28),
-                ),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: whiteColor,
+            elevation: 2,
+            pinned: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(28),
+                bottomRight: Radius.circular(28),
               ),
-              toolbarHeight: 70, // Adjust the desired height here
-              flexibleSpace: FlexibleSpaceBar(
-                background: Column(
+            ),
+            toolbarHeight: 70, // Adjust the desired height here
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                margin: const EdgeInsets.only(top: 25),
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment
                       .start, // Aligns the text vertically at the center
@@ -46,14 +47,14 @@ class _PostPageState extends State<PostPage> {
                 ),
               ),
             ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                Container(),
-                // Add your remaining ListView children here
-              ]),
-            ),
-          ],
-        ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate([
+              Container(),
+              // Add your remaining ListView children here
+            ]),
+          ),
+        ],
       ),
     );
   }
