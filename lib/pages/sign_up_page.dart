@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:slider_captcha/slider_captcha.dart';
@@ -13,7 +14,7 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  // final _nameController = TextEditingController();
+  final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -23,7 +24,7 @@ class _SignUpPageState extends State<SignUpPage> {
   bool _passwordVisible = false;
   @override
   void dispose() {
-    // _nameController.dispose();
+    _nameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _confirmPasswordController.dispose();
@@ -63,10 +64,24 @@ class _SignUpPageState extends State<SignUpPage> {
 
     try {
       if (isPasswordConfirmed()) {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        // create user
+        UserCredential userCredential =
+            await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
+
+        // collect user document
+        FirebaseFirestore.instance
+            .collection('Users')
+            .doc(userCredential.user!.email)
+            .set({
+          'name': _nameController.text,
+          'email': _emailController.text,
+          'bio': 'Empthy bio..',
+          'urlProfile':
+              'https://api.multiavatar.com/${_nameController.text}.png'
+        });
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text(
@@ -87,6 +102,15 @@ class _SignUpPageState extends State<SignUpPage> {
     } finally {
       Navigator.of(context).pop();
     }
+  }
+
+  Future addUserDetails(String name, String email) async {
+    await FirebaseFirestore.instance.collection('users').add({
+      'name': name,
+      'email': email,
+      'bio': 'My Bio',
+      'urlProfile': 'https://api.multiavatar.com/Binx%20Bond.png',
+    });
   }
 
   bool isPasswordConfirmed() {
@@ -198,23 +222,23 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ],
                   ),
-                  // child: TextField(
-                  //   controller: _nameController,
-                  //   style: regularPoppins.copyWith(fontSize: 14),
-                  //   decoration: InputDecoration(
-                  //     filled: true,
-                  //     fillColor: whiteColor,
-                  //     focusedBorder: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(12),
-                  //       borderSide:
-                  //           BorderSide(color: secondaryColor, width: 2.0),
-                  //     ),
-                  //     border: OutlineInputBorder(
-                  //       borderRadius: BorderRadius.circular(12),
-                  //     ),
-                  //     hintText: "Name",
-                  //   ),
-                  // ),
+                  child: TextField(
+                    controller: _nameController,
+                    style: regularPoppins.copyWith(fontSize: 14),
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: whiteColor,
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        borderSide:
+                            BorderSide(color: secondaryColor, width: 2.0),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      hintText: "Name",
+                    ),
+                  ),
                 ),
                 const SizedBox(
                   height: 24,
