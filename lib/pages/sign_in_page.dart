@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:slider_captcha/slider_captcha.dart';
+import 'dart:math';
 
 import '../theme.dart';
 
@@ -41,6 +42,11 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void _showSliderCaptchaDialog() {
+    Random rnd;
+    int min = 1;
+    int max = 20;
+    rnd = Random();
+    int numberRnd = min + rnd.nextInt(max - min);
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -69,7 +75,7 @@ class _SignInPageState extends State<SignInPage> {
                 titleStyle: semiPoppins,
                 controller: _sliderController,
                 image: Image.asset(
-                  'assets/captcha/1.jpg',
+                  "assets/captcha/$numberRnd.jpg",
                   fit: BoxFit.fitWidth,
                 ),
                 colorBar: secondaryColor,
