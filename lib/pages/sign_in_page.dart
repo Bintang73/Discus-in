@@ -76,7 +76,7 @@ class _SignInPageState extends State<SignInPage> {
                 controller: _sliderController,
                 image: Image.asset(
                   "assets/captcha/$numberRnd.jpg",
-                  fit: BoxFit.fitWidth,
+                  fit: BoxFit.cover,
                 ),
                 colorBar: secondaryColor,
                 colorCaptChar: secondaryColor,
