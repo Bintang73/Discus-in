@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/news.dart';
+import 'package:stalkin/models/topic.dart';
 import 'package:stalkin/widgets/news_card.dart';
+import 'package:stalkin/widgets/topic_card.dart';
 
 import '../theme.dart';
 
@@ -124,6 +126,21 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(
                 height: 16,
+              ),
+              TopicCard(
+                Topic(idTopic: 1, name: 'Olahraga'),
+              ),
+              TopicCard(
+                Topic(idTopic: 2, name: 'Teknologi'),
+              ),
+              TopicCard(
+                Topic(idTopic: 3, name: 'Otomotif'),
+              ),
+              TopicCard(
+                Topic(idTopic: 4, name: 'Kecantikan'),
+              ),
+              TopicCard(
+                Topic(idTopic: 5, name: 'Game'),
               ),
 
               // Add your remaining ListView children here
