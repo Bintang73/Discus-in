@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/news.dart';
@@ -127,20 +128,25 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 16,
               ),
-              TopicCard(
-                Topic(idTopic: 1, name: 'Olahraga'),
-              ),
-              TopicCard(
-                Topic(idTopic: 2, name: 'Teknologi'),
-              ),
-              TopicCard(
-                Topic(idTopic: 3, name: 'Otomotif'),
-              ),
-              TopicCard(
-                Topic(idTopic: 4, name: 'Kecantikan'),
-              ),
-              TopicCard(
-                Topic(idTopic: 5, name: 'Game'),
+              StreamBuilder<QuerySnapshot>(
+                stream:
+                    FirebaseFirestore.instance.collection('Topic').snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    final topics = snapshot.data?.docs.map((doc) {
+                      final String id = doc.id;
+                      final String name = doc['name'];
+                      return Topic(idTopic: id, name: name);
+                    }).toList();
+                    if (topics != null) {
+                      return Column(
+                        children:
+                            topics.map((topic) => TopicCard(topic)).toList(),
+                      );
+                    }
+                  }
+                  return const SizedBox(); // Return an empty widget if there's no data
+                },
               ),
 
               // Add your remaining ListView children here
