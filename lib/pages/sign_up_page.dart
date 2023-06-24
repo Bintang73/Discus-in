@@ -126,7 +126,7 @@ class _SignUpPageState extends State<SignUpPage> {
   void _showSliderCaptchaDialog() {
     Random rnd;
     int min = 1;
-    int max = 20;
+    int max = 5;
     rnd = Random();
     int numberRnd = min + rnd.nextInt(max - min);
     showDialog(
