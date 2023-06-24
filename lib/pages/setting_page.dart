@@ -64,57 +64,56 @@ class _SettingPageState extends State<SettingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: mainColor,
-      body: StreamBuilder<DocumentSnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection('Users')
-            .doc(currentUser.email)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            final userData =
-                snapshot.data!.data() as Map<String, dynamic>? ?? {};
-            _name.text = userData['name'] ?? '';
-            _bio.text = userData['bio'] ?? '';
-
-            return CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  backgroundColor: whiteColor,
-                  elevation: 2,
-                  pinned: true,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(28),
-                      bottomRight: Radius.circular(28),
-                    ),
-                  ),
-                  toolbarHeight: 70,
-                  flexibleSpace: FlexibleSpaceBar(
-                    background: Container(
-                      margin: const EdgeInsets.only(top: 25),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 32),
-                            child: Text(
-                              'Setting',
-                              style: semiPoppins.copyWith(
-                                fontSize: 24,
-                                color: mainColor,
-                              ),
-                            ),
-                          ),
-                        ],
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            backgroundColor: whiteColor,
+            elevation: 2,
+            pinned: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+                bottomLeft: Radius.circular(28),
+                bottomRight: Radius.circular(28),
+              ),
+            ),
+            toolbarHeight: 70,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                margin: const EdgeInsets.only(top: 25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 32),
+                      child: Text(
+                        'Setting',
+                        style: semiPoppins.copyWith(
+                          fontSize: 24,
+                          color: mainColor,
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
-                SliverList(
-                  delegate: SliverChildListDelegate(
-                    [
-                      Container(
+              ),
+            ),
+          ),
+          SliverList(
+            delegate: SliverChildListDelegate(
+              [
+                StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('Users')
+                      .doc(currentUser.email)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      final userData =
+                          snapshot.data!.data() as Map<String, dynamic>? ?? {};
+                      _name.text = userData['name'] ?? '';
+                      _bio.text = userData['bio'] ?? '';
+                      return Container(
                         margin: const EdgeInsets.symmetric(horizontal: 32),
                         padding: const EdgeInsets.only(top: 46),
                         child: Column(
@@ -254,23 +253,22 @@ class _SettingPageState extends State<SettingPage> {
                             ),
                           ],
                         ),
-                      )
-                      // Add your remaining ListView children here
-                    ],
-                  ),
+                      );
+                    } else if (snapshot.hasError) {
+                      return Center(
+                        child: Text('Error ${snapshot.error}'),
+                      );
+                    } else {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
+                  },
                 ),
               ],
-            );
-          } else if (snapshot.hasError) {
-            return Center(
-              child: Text('Error ${snapshot.error}'),
-            );
-          } else {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-        },
+            ),
+          ),
+        ],
       ),
     );
   }
