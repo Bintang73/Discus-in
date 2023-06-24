@@ -1,5 +1,5 @@
 class Topic {
-  int idTopic;
+  String idTopic;
   String name;
 
   Topic({

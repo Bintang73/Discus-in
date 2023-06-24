@@ -68,13 +68,23 @@ class _PostPageState extends State<PostPage> {
                           } else {
                             final topics =
                                 snapshot.data?.docs.reversed.toList();
-                            topicList.add(const DropdownMenuItem(
+                            topicList.add(DropdownMenuItem(
                                 value: '0',
-                                child: Text('Pilih Topik Diskusi')));
+                                child: Text(
+                                  'Pilih Topik Diskusi',
+                                  style: semiPoppins.copyWith(
+                                    fontSize: 16,
+                                  ),
+                                )));
                             for (var topic in topics!) {
                               topicList.add(DropdownMenuItem(
                                 value: topic.id,
-                                child: Text(topic['name']),
+                                child: Text(
+                                  topic['name'],
+                                  style: semiPoppins.copyWith(
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ));
                             }
                           }
