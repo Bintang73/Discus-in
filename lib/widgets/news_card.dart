@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/news.dart';
 import 'package:stalkin/theme.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class NewsCard extends StatelessWidget {
   final News news;
@@ -9,6 +10,33 @@ class NewsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void openLinkInChrome(Uri url) async {
+      try {
+        await launchUrl(
+          url,
+          mode: LaunchMode.externalApplication,
+        );
+      } catch (e) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Error'),
+              content: Text('Could not launch the URL'),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
+
     return Container(
       decoration: BoxDecoration(
         boxShadow: [
@@ -47,7 +75,12 @@ class NewsCard extends StatelessWidget {
                 width: 325,
                 height: 40,
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    String urlString = news.linkUrl;
+                    Uri url = Uri.parse(urlString);
+
+                    openLinkInChrome(url);
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: secondaryColor,
                   ),

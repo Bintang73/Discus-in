@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stalkin/auth/main_page.dart';
 import 'firebase_options.dart';
 
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -13,6 +14,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
 
   // This widget is the root of your application.
   @override

@@ -5,8 +5,11 @@ import 'package:stalkin/models/news.dart';
 import 'package:stalkin/models/topic.dart';
 import 'package:stalkin/widgets/news_card.dart';
 import 'package:stalkin/widgets/topic_card.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '../theme.dart';
+
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,6 +20,20 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final user = FirebaseAuth.instance.currentUser!;
+
+  Future<List<dynamic>> fetchNews() async {
+    final response = await http
+        .get(Uri.parse('https://berita-indo-api.vercel.app/v1/cnn-news'));
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> data = jsonDecode(response.body);
+      final List<dynamic> news = data['data'];
+      return news;
+    } else {
+      throw Exception('Failed to fetch news');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,52 +85,50 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(
                 height: 16,
               ),
-              SizedBox(
-                height: 250,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  children: [
-                    const SizedBox(
-                      width: 32,
-                    ),
-                    NewsCard(
-                      News(
-                          idData: 1,
-                          title:
-                              'Puan Bertemu Gibran di Solo, Jalan-jalan di Mal hingga Makan Malam',
-                          imageUrl:
-                              'https://akcdn.detik.net.id/visual/2023/05/27/puan-bertemu-gibran_169.jpeg?w=360&q=90'),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    NewsCard(
-                      News(
-                          idData: 2,
-                          title:
-                              '14 KK Dievakuasi Imbas Tanah Geser Bulukumba, Pakar Jelaskan Sebabnya',
-                          imageUrl:
-                              'https://akcdn.detik.net.id/visual/2021/01/28/ilustrasi-sesar-ilustrasi-patahan-ilustrasi-tanah-bergerak_169.jpeg?w=360&q=90'),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    NewsCard(
-                      News(
-                          idData: 3,
-                          title:
-                              'Polda Metro Bakal Kembali Gelar Street Race Awal Juni',
-                          imageUrl:
-                              'https://akcdn.detik.net.id/visual/2022/09/03/gelaran-street-race-pmj-kembali-digelar-9_169.jpeg?w=360&q=90'),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    const SizedBox(
-                      width: 32,
-                    ),
-                  ],
-                ),
+              FutureBuilder<List<dynamic>>(
+                future: fetchNews(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else if (snapshot.hasData) {
+                    final List<dynamic> news = snapshot.data!;
+                    return Container(
+                      margin: const EdgeInsets.symmetric(horizontal: 32),
+                      width: 50,
+                      child: SizedBox(
+                        height: 250,
+                        child: ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          itemCount: 10,
+                          itemBuilder: (context, index) {
+                            final newsItem = news[index];
+                            return Row(
+                              children: [
+                                SizedBox(
+                                  child: NewsCard(
+                                    News(
+                                      idData: index + 1,
+                                      title: newsItem['title'],
+                                      imageUrl: newsItem['image']['small'],
+                                      linkUrl: newsItem['link'],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                              ],
+                            );
+                          },
+                        ),
+                      ),
+                    );
+                  } else {
+                    return SizedBox();
+                  }
+                },
               ),
               const SizedBox(
                 height: 38,
