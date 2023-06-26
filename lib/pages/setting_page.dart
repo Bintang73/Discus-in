@@ -1,7 +1,14 @@
+// ignore_for_file: prefer_const_constructors, duplicate_ignore
+
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:stalkin/theme.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -14,9 +21,13 @@ class _SettingPageState extends State<SettingPage> {
   final TextEditingController _name = TextEditingController();
   final TextEditingController _bio = TextEditingController();
   bool isSnackbarShown = false;
+  bool _isLoading = false;
 
   // user data
   final currentUser = FirebaseAuth.instance.currentUser!;
+
+  final ImagePicker _imagePicker = ImagePicker();
+  late String _selectedImagePath = "nothing";
 
   // edit user
   Future<void> editField(String field, String newValue) async {
@@ -27,6 +38,8 @@ class _SettingPageState extends State<SettingPage> {
           .update({field: newValue});
 
       if (!isSnackbarShown) {
+        // ignore: use_build_context_synchronously
+        Navigator.of(context).pop();
         // Cek apakah Snackbar sudah ditampilkan sebelumnya
         isSnackbarShown = true; // Set flag menjadi true
         // ignore: use_build_context_synchronously
@@ -50,6 +63,91 @@ class _SettingPageState extends State<SettingPage> {
           backgroundColor: Colors.red,
         ),
       );
+    }
+  }
+
+  Future<bool> requestStoragePermission() async {
+    PermissionStatus status = await Permission.storage.request();
+    return status.isGranted;
+  }
+
+  Future<void> _openImagePicker() async {
+    bool storagePermissionGranted = await requestStoragePermission();
+
+    if (storagePermissionGranted) {
+      // Permission granted, proceed with opening the image picker
+      final XFile? image =
+          await _imagePicker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        setState(() {
+          _selectedImagePath = image.path;
+        });
+      }
+    } else {
+      // Permission not granted, handle accordingly (show message, navigate to settings, etc.)
+      // ignore: use_build_context_synchronously
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Storage Permission Required'),
+            content:
+                Text('Please grant storage permission to select an image.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text('OK'),
+              ),
+            ],
+          );
+        },
+      );
+    }
+  }
+
+  Future<String?> _uploadImageToFirebase(String imagePath) async {
+    try {
+      FirebaseStorage storage = FirebaseStorage.instance;
+      String imageName = DateTime.now().millisecondsSinceEpoch.toString();
+      Reference ref = storage.ref().child('discusin-image/$imageName');
+      UploadTask uploadTask = ref.putFile(File(imagePath));
+      TaskSnapshot taskSnapshot = await uploadTask;
+      String imageUrl = await taskSnapshot.ref.getDownloadURL();
+      return imageUrl;
+    } catch (e) {
+      // Handle any errors that occur during the upload.
+      return null;
+    }
+  }
+
+  Future<void> _uploadImage() async {
+    // ignore: unnecessary_null_comparison
+    try {
+      if (_selectedImagePath == "nothing") {
+        // No image selected. Handle this scenario.
+        return;
+      } else {
+        setState(() {
+          _isLoading = true;
+        });
+        String? imageUrl = await _uploadImageToFirebase(_selectedImagePath);
+        if (imageUrl != null) {
+          // Image uploaded successfully. Handle the URL as needed.
+          editField('urlProfile', imageUrl);
+          // ignore: avoid_print
+          print('Image URL: $imageUrl');
+          setState(() {
+            _isLoading = false;
+          });
+        } else {
+          // Error occurred during image upload. Handle the error.
+        }
+      }
+    } catch (e) {
+      // ignore: avoid_print
+      print(e.toString());
     }
   }
 
@@ -125,13 +223,33 @@ class _SettingPageState extends State<SettingPage> {
                                 children: [
                                   ClipRRect(
                                     borderRadius: BorderRadius.circular(100),
-                                    child: Image.network(
-                                      userData['urlProfile'] ?? '',
-                                      height: 80,
-                                      width: 80,
-                                      fit: BoxFit.cover,
-                                    ),
+                                    child: _selectedImagePath != "nothing"
+                                        ? Image.file(
+                                            File(_selectedImagePath),
+                                            height: 80,
+                                            width: 80,
+                                            fit: BoxFit.cover,
+                                          )
+                                        : Image.network(
+                                            userData['urlProfile'] ?? '',
+                                            height: 80,
+                                            width: 80,
+                                            fit: BoxFit.cover,
+                                          ),
                                   ),
+                                  if (_isLoading)
+                                    Positioned.fill(
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.3),
+                                          borderRadius:
+                                              BorderRadius.circular(100),
+                                        ), // Adjust the opacity as needed
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      ),
+                                    ),
                                   Positioned.fill(
                                     child: Container(
                                       decoration: BoxDecoration(
@@ -149,9 +267,7 @@ class _SettingPageState extends State<SettingPage> {
                                     child: IconButton(
                                       icon: const Icon(Icons.edit),
                                       color: whiteColor,
-                                      onPressed: () {
-                                        // Tambahkan aksi yang diinginkan ketika ikon edit diklik
-                                      },
+                                      onPressed: _openImagePicker,
                                     ),
                                   ),
                                 ],
@@ -233,7 +349,8 @@ class _SettingPageState extends State<SettingPage> {
                                 ],
                               ),
                               child: ElevatedButton(
-                                onPressed: () {
+                                onPressed: () async {
+                                  await _uploadImage();
                                   editField('name', _name.text);
                                   editField('bio', _bio.text);
                                 },
