@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/user.dart';
+import 'package:stalkin/pages/view_users_page.dart';
 
 import '../theme.dart';
 
@@ -35,7 +36,7 @@ class SearchUsers extends StatelessWidget {
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
                   child: Image.asset(
-                    'assets/captcha/1.jpg',
+                    user.urlProfile,
                     height: 30,
                     width: 30,
                     fit: BoxFit.cover,
@@ -51,7 +52,15 @@ class SearchUsers extends StatelessWidget {
               ],
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return ViewUsersPage(
+                    urlProfile: user.urlProfile,
+                    name: user.name,
+                    bio: user.bio,
+                  );
+                }));
+              },
               child: Container(
                 height: 30,
                 width: 62,

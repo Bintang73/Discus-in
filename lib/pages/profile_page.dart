@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/pages/setting_page.dart';
 
+import '../models/post.dart';
 import '../theme.dart';
+import '../widgets/post_card_profile.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -182,6 +184,24 @@ class _ProfilePageState extends State<ProfilePage> {
                                 },
                               ),
                             ],
+                          ),
+                        ),
+                        Container(
+                          margin: const EdgeInsets.only(top: 20, bottom: 8),
+                          child: Text(
+                            'My Post',
+                            style: semiPoppins.copyWith(
+                                fontSize: 24, color: whiteColor),
+                          ),
+                        ),
+                        PostCardProfile(
+                          Post(
+                            idPost: '1',
+                            idTopic: '1',
+                            nameUser: 'Username',
+                            content: 'Test post 1',
+                            votes: 122,
+                            timestamp: Timestamp.now(),
                           ),
                         ),
                       ],

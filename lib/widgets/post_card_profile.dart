@@ -1,29 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:stalkin/pages/comment_page.dart';
 import 'package:intl/intl.dart';
+import 'package:stalkin/pages/comment_page.dart';
 
 import '../models/post.dart';
 import '../theme.dart';
 
-class PostCard extends StatefulWidget {
+class PostCardProfile extends StatefulWidget {
   final Post post;
-
-  const PostCard(this.post, {super.key});
+  const PostCardProfile(this.post, {super.key});
 
   @override
-  State<PostCard> createState() => _PostCardState();
+  State<PostCardProfile> createState() => _PostCardProfileState();
 }
 
-class _PostCardState extends State<PostCard> {
+class _PostCardProfileState extends State<PostCardProfile> {
   bool isUpvoted = false;
   bool isDownvoted = false;
-
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(left: 32, right: 32, bottom: 26),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+      margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
           color: whiteColor, borderRadius: BorderRadius.circular(12)),
       child: Column(
@@ -50,7 +48,7 @@ class _PostCardState extends State<PostCard> {
                     children: [
                       Text(
                         widget.post.nameUser,
-                        style: regularPoppins.copyWith(fontSize: 16),
+                        style: regularPoppins.copyWith(fontSize: 14),
                       ),
                       Text(
                         DateFormat('d MMM y HH:mm')
@@ -61,7 +59,7 @@ class _PostCardState extends State<PostCard> {
                   ),
                 ],
               ),
-              const Icon(Icons.bookmark_border_outlined)
+              const Icon(Icons.delete)
             ],
           ),
           Container(
@@ -79,59 +77,63 @@ class _PostCardState extends State<PostCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.all(2),
-                decoration: BoxDecoration(
-                    color: secondaryColor,
-                    borderRadius: BorderRadius.circular(12)),
-                child: Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isUpvoted = !isUpvoted;
-                            isDownvoted = false; // Reset the downvote state
-                            if (isUpvoted) {
-                              widget.post.votes++;
-                            } else {
-                              widget.post.votes--;
-                            }
-                          });
-                        },
-                        child: Icon(
-                          Icons.arrow_upward_rounded,
-                          color: isUpvoted ? Colors.blue[800] : blackColor,
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(2),
+                    decoration: BoxDecoration(
+                        color: secondaryColor,
+                        borderRadius: BorderRadius.circular(12)),
+                    child: Row(
+                      children: [
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isUpvoted = !isUpvoted;
+                                isDownvoted = false; // Reset the downvote state
+                                if (isUpvoted) {
+                                  widget.post.votes++;
+                                } else {
+                                  widget.post.votes--;
+                                }
+                              });
+                            },
+                            child: Icon(
+                              Icons.arrow_upward_rounded,
+                              color: isUpvoted ? Colors.blue[800] : blackColor,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    Text(
-                      widget.post.votes.toString(),
-                      style: boldPoppins.copyWith(fontSize: 14),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 8),
-                      child: GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isDownvoted = !isDownvoted;
-                            isUpvoted = false; // Reset the upvote state
-                            if (isDownvoted) {
-                              widget.post.votes--;
-                            } else {
-                              widget.post.votes++;
-                            }
-                          });
-                        },
-                        child: Icon(
-                          Icons.arrow_downward_rounded,
-                          color: isDownvoted ? Colors.red[800] : blackColor,
+                        Text(
+                          widget.post.votes.toString(),
+                          style: boldPoppins.copyWith(fontSize: 14),
                         ),
-                      ),
+                        Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 8),
+                          child: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                isDownvoted = !isDownvoted;
+                                isUpvoted = false; // Reset the upvote state
+                                if (isDownvoted) {
+                                  widget.post.votes--;
+                                } else {
+                                  widget.post.votes++;
+                                }
+                              });
+                            },
+                            child: Icon(
+                              Icons.arrow_downward_rounded,
+                              color: isDownvoted ? Colors.red[800] : blackColor,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
               GestureDetector(
                 onTap: () {

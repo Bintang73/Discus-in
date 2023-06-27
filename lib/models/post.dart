@@ -1,17 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Post {
-  int idPost;
-  int idTopic;
+  String idPost;
+  String idTopic;
   String nameUser;
   String content;
-  int likes;
-  int dislike;
+  int votes;
+  Timestamp timestamp;
 
   Post({
     required this.idPost,
     required this.idTopic,
     required this.nameUser,
     required this.content,
-    required this.likes,
-    required this.dislike,
+    required this.votes,
+    required this.timestamp,
   });
 }

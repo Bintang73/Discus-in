@@ -1,21 +1,28 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:stalkin/models/post.dart';
 import 'package:stalkin/theme.dart';
 import 'package:stalkin/widgets/comment_card.dart';
+import 'package:stalkin/widgets/post_content.dart';
 
 import '../models/comment.dart';
 
 class CommentPage extends StatefulWidget {
   final String name;
   final String content;
-  final int like;
-  final int dislike;
+  final int votes;
+  final String idPost;
+  final String idTopic;
+  final Timestamp timestamp;
 
   const CommentPage({
     Key? key,
     required this.name,
     required this.content,
-    required this.like,
-    required this.dislike,
+    required this.votes,
+    required this.idPost,
+    required this.idTopic,
+    required this.timestamp,
   }) : super(key: key);
 
   @override
@@ -31,99 +38,34 @@ class _CommentPageState extends State<CommentPage> {
       body: SafeArea(
         child: ListView(
           children: [
-            Container(
-              margin: const EdgeInsets.only(bottom: 23),
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-              decoration: BoxDecoration(
-                color: whiteColor,
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.asset(
-                              'assets/captcha/1.jpg',
-                              height: 30,
-                              width: 30,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 12,
-                          ),
-                          Text(
-                            widget.name,
-                            style: regularPoppins.copyWith(fontSize: 14),
-                          ),
-                        ],
-                      ),
-                      const Icon(Icons.bookmark_border_outlined)
-                    ],
-                  ),
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 20),
-                    child: Flexible(
-                      child: Text(
-                        widget.content,
-                        style: regularPoppins.copyWith(fontSize: 12),
-                      ),
-                    ),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Row(
-                        children: [
-                          const Icon(Icons.thumb_up_alt_outlined),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Text(
-                            widget.like.toString(),
-                            style: boldPoppins.copyWith(fontSize: 14),
-                          ),
-                          const SizedBox(
-                            width: 24,
-                          ),
-                          const Icon(Icons.thumb_down_alt_outlined),
-                          const SizedBox(
-                            width: 8,
-                          ),
-                          Text(
-                            widget.dislike.toString(),
-                            style: boldPoppins.copyWith(fontSize: 14),
-                          )
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            PostContent(Post(
+              idPost: widget.idPost,
+              idTopic: widget.idTopic,
+              nameUser: widget.name,
+              content: widget.content,
+              votes: widget.votes,
+              timestamp: widget.timestamp,
+            )),
             CommentCard(
               Comment(
-                  idComment: 1,
-                  idPost: 1,
-                  idUser: 2,
-                  content: 'Test Comment',
-                  likes: 4,
-                  dislike: 90),
+                idComment: 1,
+                idPost: 1,
+                idUser: 2,
+                content: 'Test Comment',
+                votes: 4,
+                timeStamp: Timestamp.now(),
+              ),
               name: 'Anton',
             ),
             CommentCard(
               Comment(
-                  idComment: 1,
-                  idPost: 1,
-                  idUser: 2,
-                  content: 'Hmm Menarik',
-                  likes: 100,
-                  dislike: 0),
+                idComment: 1,
+                idPost: 1,
+                idUser: 2,
+                content: 'Hmm Menarik',
+                votes: 100,
+                timeStamp: Timestamp.now(),
+              ),
               name: 'Budi',
             ),
             Container(
@@ -144,6 +86,13 @@ class _CommentPageState extends State<CommentPage> {
                 controller: commentController,
                 style: regularPoppins.copyWith(fontSize: 14),
                 decoration: InputDecoration(
+                  suffixIcon: GestureDetector(
+                    onTap: () {},
+                    child: Icon(
+                      Icons.send,
+                      color: blackColor,
+                    ),
+                  ),
                   filled: true,
                   fillColor: whiteColor,
                   focusedBorder: OutlineInputBorder(

@@ -101,18 +101,24 @@ class _SearchPageState extends State<SearchPage> {
                       Users(
                         idUser: 1,
                         name: 'Anton',
+                        bio: 'Ini bio Anton',
+                        urlProfile: 'assets/captcha/1.jpg',
                       ),
                     ),
                     SearchUsers(
                       Users(
                         idUser: 2,
                         name: 'Beni',
+                        bio: 'Ini bio Beni',
+                        urlProfile: 'assets/captcha/2.jpg',
                       ),
                     ),
                     SearchUsers(
                       Users(
                         idUser: 3,
                         name: 'Rusdi',
+                        bio: 'Ini bio Rusdi',
+                        urlProfile: 'assets/captcha/3.jpg',
                       ),
                     ),
                   ],

@@ -157,6 +157,7 @@ class _PostPageState extends State<PostPage> {
                         ),
                       ),
                       SizedBox(
+                        height: 40,
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
