@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/post.dart';
 import 'package:stalkin/widgets/post_card.dart';
@@ -67,23 +68,25 @@ class _TopicPostPageState extends State<TopicPostPage> {
             ),
             PostCard(
               Post(
-                  idPost: 1,
-                  idTopic: 1,
-                  nameUser: 'Anindita',
-                  content:
-                      'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys',
-                  likes: 122,
-                  dislike: 3),
+                idPost: '1',
+                idTopic: '1',
+                nameUser: 'Anindita',
+                content:
+                    'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys',
+                votes: 122,
+                timestamp: Timestamp.now(),
+              ),
             ),
             PostCard(
               Post(
-                  idPost: 2,
-                  idTopic: 1,
-                  nameUser: 'Amelia',
-                  content:
-                      'standard dummy text ever since the 1500s, when an unknown printer took a galley of Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys',
-                  likes: 0,
-                  dislike: 8),
+                idPost: '2',
+                idTopic: '1',
+                nameUser: 'Amelia',
+                content:
+                    'standard dummy text ever since the 1500s, when an unknown printer took a galley of Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys',
+                votes: 0,
+                timestamp: Timestamp.now(),
+              ),
             ),
           ],
         ),

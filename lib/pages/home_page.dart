@@ -10,7 +10,6 @@ import 'dart:convert';
 
 import '../theme.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -89,13 +88,12 @@ class _HomePageState extends State<HomePage> {
                 future: fetchNews(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();
+                    return const SizedBox();
                   } else if (snapshot.hasError) {
                     return Text('Error: ${snapshot.error}');
                   } else if (snapshot.hasData) {
                     final List<dynamic> news = snapshot.data!;
-                    return Container(
-                      margin: const EdgeInsets.symmetric(horizontal: 32),
+                    return SizedBox(
                       width: 50,
                       child: SizedBox(
                         height: 250,
@@ -106,18 +104,19 @@ class _HomePageState extends State<HomePage> {
                             final newsItem = news[index];
                             return Row(
                               children: [
-                                SizedBox(
-                                  child: NewsCard(
-                                    News(
-                                      idData: index + 1,
-                                      title: newsItem['title'],
-                                      imageUrl: newsItem['image']['small'],
-                                      linkUrl: newsItem['link'],
+                                Container(
+                                  margin: const EdgeInsets.symmetric(
+                                      horizontal: 10),
+                                  child: SizedBox(
+                                    child: NewsCard(
+                                      News(
+                                        idData: index + 1,
+                                        title: newsItem['title'],
+                                        imageUrl: newsItem['image']['small'],
+                                        linkUrl: newsItem['link'],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                const SizedBox(
-                                  width: 20,
                                 ),
                               ],
                             );
@@ -126,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                       ),
                     );
                   } else {
-                    return SizedBox();
+                    return const SizedBox();
                   }
                 },
               ),

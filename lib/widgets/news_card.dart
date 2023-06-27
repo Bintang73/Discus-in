@@ -21,11 +21,11 @@ class NewsCard extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Error'),
-              content: Text('Could not launch the URL'),
-              actions: <Widget>[
+              title: const Text('Error'),
+              content: const Text('Could not launch the URL'),
+              actions: [
                 TextButton(
-                  child: Text('OK'),
+                  child: const Text('OK'),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

@@ -37,7 +37,17 @@ class TopicCard extends StatelessWidget {
                     topic.name,
                     style: semiPoppins.copyWith(fontSize: 14),
                   ),
-                  const Icon(Icons.arrow_forward_ios)
+                  Container(
+                    decoration: BoxDecoration(
+                      color: secondaryColor,
+                      shape: BoxShape.circle,
+                    ),
+                    width: 40,
+                    height: double.infinity,
+                    child: const Icon(
+                      Icons.arrow_forward_ios,
+                    ),
+                  )
                 ],
               ),
             ),
