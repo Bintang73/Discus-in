@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import '../theme.dart';
 
@@ -12,6 +13,54 @@ class PostPage extends StatefulWidget {
 
 class _PostPageState extends State<PostPage> {
   String selectedTopic = '0';
+  final TextEditingController _textdiscus = TextEditingController();
+  bool isSnackbarShown = false;
+
+  // user data
+  final currentUser = FirebaseAuth.instance.currentUser!;
+
+  // add post user
+  Future<void> postField(String postKategori, String postPostingan) async {
+    try {
+      DateTime now = DateTime.now();
+      int timestamp = now.millisecondsSinceEpoch ~/ 1000;
+      await FirebaseFirestore.instance.collection('User Post').add({
+        "kategori": postKategori,
+        "email": currentUser.email,
+        "timestamp": timestamp,
+        "postingan": postPostingan,
+        "likeby": [],
+        "dislikeby": [],
+        "savedby": [],
+        "commentCount": 0,
+        "comment": []
+      });
+      // ignore: use_build_context_synchronously
+      Navigator.of(context).pop();
+      // Cek apakah Snackbar sudah ditampilkan sebelumnya
+      isSnackbarShown = true; // Set flag menjadi true
+      // ignore: use_build_context_synchronously
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            'Berhasil Ditambahkan',
+            style: semiPoppins,
+          ),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+            style: semiPoppins,
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +183,7 @@ class _PostPageState extends State<PostPage> {
                         height: 300,
                         width: double.infinity,
                         child: TextField(
-                          //controller: _bio,
+                          controller: _textdiscus,
                           textAlignVertical: TextAlignVertical.top,
                           expands: true,
                           maxLines: null,
@@ -157,30 +206,75 @@ class _PostPageState extends State<PostPage> {
                         ),
                       ),
                       SizedBox(
-                        height: 40,
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
-                            showDialog<String>(
-                              context: context,
-                              builder: (BuildContext context) => AlertDialog(
-                                title: const Text('Pesan Dialog'),
-                                content: const Text(
-                                    'Apakah anda yakin ingin mengirim post ini?'),
-                                actions: <Widget>[
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'Cancel'),
-                                    child: const Text('Cancel'),
+                            try {
+                              if (selectedTopic == "0") {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Silahkan Pilih Topik Diskusi Terlebih Dahulu!',
+                                      style: semiPoppins,
+                                    ),
+                                    backgroundColor: Colors.red,
                                   ),
-                                  TextButton(
-                                    onPressed: () =>
-                                        Navigator.pop(context, 'OK'),
-                                    child: const Text('OK'),
-                                  ),
-                                ],
-                              ),
-                            );
+                                );
+                              } else {
+                                String jumlahKata =
+                                    _textdiscus.text.split(' ').length >= 5
+                                        ? 'Benar'
+                                        : 'Salah';
+                                if (jumlahKata == "Benar") {
+                                  showDialog<String>(
+                                    context: context,
+                                    builder: (BuildContext context) =>
+                                        AlertDialog(
+                                      title: const Text('Pesan Dialog'),
+                                      content: const Text(
+                                          'Apakah anda yakin ingin mengirim post ini?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () =>
+                                              Navigator.pop(context, 'Cancel'),
+                                          child: const Text('Cancel'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () async {
+                                            DocumentSnapshot docSnapshot =
+                                                await FirebaseFirestore.instance
+                                                    .collection('Topic')
+                                                    .doc(selectedTopic)
+                                                    .get();
+                                            if (docSnapshot.exists) {
+                                              Map<String, dynamic> data =
+                                                  docSnapshot.data()
+                                                      as Map<String, dynamic>;
+                                              String name = data['name'];
+                                              postField(name, _textdiscus.text);
+                                            }
+                                          },
+                                          child: const Text('OK'),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Jumlah Minimal 5 Kata yang akan di post!',
+                                        style: semiPoppins,
+                                      ),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                }
+                              }
+                            } catch (e) {
+                              // ignore: avoid_print
+                              print(e);
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: secondaryColor,
