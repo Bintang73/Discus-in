@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/post.dart';
 import 'package:stalkin/theme.dart';
@@ -13,7 +12,8 @@ class CommentPage extends StatefulWidget {
   final int votes;
   final String idPost;
   final String idTopic;
-  final Timestamp timestamp;
+  final String profileUser;
+  final int timestamp;
 
   const CommentPage({
     Key? key,
@@ -22,6 +22,7 @@ class CommentPage extends StatefulWidget {
     required this.votes,
     required this.idPost,
     required this.idTopic,
+    required this.profileUser,
     required this.timestamp,
   }) : super(key: key);
 
@@ -41,6 +42,7 @@ class _CommentPageState extends State<CommentPage> {
             PostContent(Post(
               idPost: widget.idPost,
               idTopic: widget.idTopic,
+              profileUser: widget.profileUser,
               nameUser: widget.name,
               content: widget.content,
               votes: widget.votes,
@@ -53,7 +55,7 @@ class _CommentPageState extends State<CommentPage> {
                 idUser: 2,
                 content: 'Test Comment',
                 votes: 4,
-                timeStamp: Timestamp.now(),
+                timeStamp: 1688127705,
               ),
               name: 'Anton',
             ),
@@ -64,7 +66,7 @@ class _CommentPageState extends State<CommentPage> {
                 idUser: 2,
                 content: 'Hmm Menarik',
                 votes: 100,
-                timeStamp: Timestamp.now(),
+                timeStamp: 1688127705,
               ),
               name: 'Budi',
             ),

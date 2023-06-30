@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-
 import '../models/comment.dart';
 import '../theme.dart';
 
@@ -16,8 +14,45 @@ class CommentCard extends StatefulWidget {
 class _CommentCardState extends State<CommentCard> {
   bool isUpvoted = false;
   bool isDownvoted = false;
+
+  String _getMonth(int month) {
+    switch (month) {
+      case 1:
+        return 'Jan';
+      case 2:
+        return 'Feb';
+      case 3:
+        return 'Mar';
+      case 4:
+        return 'Apr';
+      case 5:
+        return 'May';
+      case 6:
+        return 'Jun';
+      case 7:
+        return 'Jul';
+      case 8:
+        return 'Aug';
+      case 9:
+        return 'Sep';
+      case 10:
+        return 'Oct';
+      case 11:
+        return 'Nov';
+      case 12:
+        return 'Dec';
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final int timestampInSeconds = widget.comment.timeStamp;
+    final DateTime dateTime =
+        DateTime.fromMillisecondsSinceEpoch(timestampInSeconds * 1000);
+    final String formattedDate =
+        '${dateTime.day} ${_getMonth(dateTime.month)} ${dateTime.year} ${dateTime.hour}:${dateTime.minute}';
     return Container(
       margin: const EdgeInsets.only(left: 20, right: 20, bottom: 16),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -49,8 +84,7 @@ class _CommentCardState extends State<CommentCard> {
                     style: regularPoppins.copyWith(fontSize: 14),
                   ),
                   Text(
-                    DateFormat('d MMM y HH:mm')
-                        .format(widget.comment.timeStamp.toDate()),
+                    formattedDate,
                     style: regularPoppins.copyWith(fontSize: 10),
                   )
                 ],

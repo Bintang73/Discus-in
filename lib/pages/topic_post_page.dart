@@ -6,14 +6,73 @@ import '../theme.dart';
 
 class TopicPostPage extends StatefulWidget {
   final String name;
-  const TopicPostPage({super.key, required this.name});
+  const TopicPostPage({Key? key, required this.name}) : super(key: key);
 
   @override
   State<TopicPostPage> createState() => _TopicPostPageState();
 }
 
 class _TopicPostPageState extends State<TopicPostPage> {
+  List<Post> posts = [];
   TextEditingController search = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    getPost();
+  }
+
+  Future<void> getPost() async {
+    try {
+      CollectionReference postCollection =
+          FirebaseFirestore.instance.collection('User Post');
+      QuerySnapshot<Object?> snapshot =
+          await postCollection.where('kategori', isEqualTo: widget.name).get();
+      // ignore: prefer_is_empty
+      if (snapshot.docs.length > 0) {
+        for (int i = 0; i < snapshot.docs.length && i < 20; i++) {
+          String email = snapshot.docs[i].get('email');
+          DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+              .collection('Users')
+              .doc(email)
+              .get();
+          setState(() {
+            if (docSnapshot.exists) {
+              Map<String, dynamic> data =
+                  docSnapshot.data() as Map<String, dynamic>;
+              String name = data['name'];
+              String userUrlProfile = data['urlProfile'];
+              String userContent = snapshot.docs[i].get('postingan');
+              int userCommentCount = snapshot.docs[i].get('commentCount');
+              int userTimestamp = snapshot.docs[i].get('timestamp');
+              posts.add(
+                Post(
+                  idPost: '1',
+                  idTopic: widget.name,
+                  profileUser: userUrlProfile,
+                  nameUser: name,
+                  content: userContent,
+                  votes: userCommentCount,
+                  timestamp: userTimestamp,
+                ),
+              );
+            }
+          });
+        }
+      } // Trigger a rebuild after retrieving the posts
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+            style: semiPoppins,
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -66,28 +125,7 @@ class _TopicPostPageState extends State<TopicPostPage> {
                 ),
               ),
             ),
-            PostCard(
-              Post(
-                idPost: '1',
-                idTopic: '1',
-                nameUser: 'Anindita',
-                content:
-                    'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys',
-                votes: 122,
-                timestamp: Timestamp.now(),
-              ),
-            ),
-            PostCard(
-              Post(
-                idPost: '2',
-                idTopic: '1',
-                nameUser: 'Amelia',
-                content:
-                    'standard dummy text ever since the 1500s, when an unknown printer took a galley of Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys',
-                votes: 0,
-                timestamp: Timestamp.now(),
-              ),
-            ),
+            ...posts.map((post) => PostCard(post)).toList(),
           ],
         ),
       ),

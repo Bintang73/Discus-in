@@ -198,10 +198,11 @@ class _ProfilePageState extends State<ProfilePage> {
                           Post(
                             idPost: '1',
                             idTopic: '1',
+                            profileUser: "ok",
                             nameUser: 'Username',
                             content: 'Test post 1',
                             votes: 122,
-                            timestamp: Timestamp.now(),
+                            timestamp: 1688127705,
                           ),
                         ),
                       ],

@@ -1,6 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:stalkin/pages/comment_page.dart';
 
 import '../models/post.dart';
@@ -17,8 +15,46 @@ class PostCardProfile extends StatefulWidget {
 class _PostCardProfileState extends State<PostCardProfile> {
   bool isUpvoted = false;
   bool isDownvoted = false;
+
+  // ignore: no_leading_underscores_for_local_identifiers
+  String _getMonth(int month) {
+    switch (month) {
+      case 1:
+        return 'Jan';
+      case 2:
+        return 'Feb';
+      case 3:
+        return 'Mar';
+      case 4:
+        return 'Apr';
+      case 5:
+        return 'May';
+      case 6:
+        return 'Jun';
+      case 7:
+        return 'Jul';
+      case 8:
+        return 'Aug';
+      case 9:
+        return 'Sep';
+      case 10:
+        return 'Oct';
+      case 11:
+        return 'Nov';
+      case 12:
+        return 'Dec';
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final int timestampInSeconds = widget.post.timestamp;
+    final DateTime dateTime =
+        DateTime.fromMillisecondsSinceEpoch(timestampInSeconds * 1000);
+    final String formattedDate =
+        '${dateTime.day} ${_getMonth(dateTime.month)} ${dateTime.year} ${dateTime.hour}:${dateTime.minute}';
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       margin: const EdgeInsets.only(bottom: 20),
@@ -51,8 +87,7 @@ class _PostCardProfileState extends State<PostCardProfile> {
                         style: regularPoppins.copyWith(fontSize: 14),
                       ),
                       Text(
-                        DateFormat('d MMM y HH:mm')
-                            .format(widget.post.timestamp.toDate()),
+                        formattedDate,
                         style: regularPoppins.copyWith(fontSize: 10),
                       )
                     ],
@@ -144,7 +179,8 @@ class _PostCardProfileState extends State<PostCardProfile> {
                       votes: widget.post.votes,
                       idPost: '1',
                       idTopic: '2',
-                      timestamp: Timestamp.now(),
+                      profileUser: 'ok',
+                      timestamp: 1688127705,
                     );
                   }));
                 },

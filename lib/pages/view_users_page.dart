@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/theme.dart';
 import 'package:stalkin/widgets/post_card.dart';
@@ -86,10 +85,11 @@ class _ViewUsersPageState extends State<ViewUsersPage> {
                     Post(
                       idPost: '1',
                       idTopic: '1',
+                      profileUser: 'ok',
                       nameUser: 'Username',
                       content: 'Test post 1',
                       votes: 122,
-                      timestamp: Timestamp.now(),
+                      timestamp: 1688127705,
                     ),
                   ),
                 ],

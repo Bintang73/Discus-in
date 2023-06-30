@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:stalkin/models/post.dart';
 
 import '../theme.dart';
@@ -15,8 +14,45 @@ class PostContent extends StatefulWidget {
 class _PostContentState extends State<PostContent> {
   bool isUpvoted = false;
   bool isDownvoted = false;
+
+  String _getMonth(int month) {
+    switch (month) {
+      case 1:
+        return 'Jan';
+      case 2:
+        return 'Feb';
+      case 3:
+        return 'Mar';
+      case 4:
+        return 'Apr';
+      case 5:
+        return 'May';
+      case 6:
+        return 'Jun';
+      case 7:
+        return 'Jul';
+      case 8:
+        return 'Aug';
+      case 9:
+        return 'Sep';
+      case 10:
+        return 'Oct';
+      case 11:
+        return 'Nov';
+      case 12:
+        return 'Dec';
+      default:
+        return '';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final int timestampInSeconds = widget.post.timestamp;
+    final DateTime dateTime =
+        DateTime.fromMillisecondsSinceEpoch(timestampInSeconds * 1000);
+    final String formattedDate =
+        '${dateTime.day} ${_getMonth(dateTime.month)} ${dateTime.year} ${dateTime.hour}:${dateTime.minute}';
     return Container(
       margin: const EdgeInsets.only(bottom: 23),
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
@@ -51,8 +87,7 @@ class _PostContentState extends State<PostContent> {
                         style: regularPoppins.copyWith(fontSize: 16),
                       ),
                       Text(
-                        DateFormat('d MMM y HH:mm')
-                            .format(widget.post.timestamp.toDate()),
+                        formattedDate,
                         style: regularPoppins.copyWith(fontSize: 10),
                       )
                     ],
