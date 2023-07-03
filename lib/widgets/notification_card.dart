@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/notification.dart';
+import 'package:stalkin/pages/comment_page.dart';
 
 import '../theme.dart';
 
@@ -39,7 +40,19 @@ class NotificationUser extends StatelessWidget {
               ],
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) {
+                  return CommentPage(
+                    name: "ok",
+                    content: "ok",
+                    votes: 1,
+                    idPost: '1',
+                    idTopic: '2',
+                    profileUser: 'ok',
+                    timestamp: 1688127705,
+                  );
+                }));
+              },
               child: Container(
                 height: 30,
                 width: 62,

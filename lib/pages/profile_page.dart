@@ -17,6 +17,67 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   // user
   final currentUser = FirebaseAuth.instance.currentUser!;
+  List<Post> posts = [];
+
+  @override
+  void initState() {
+    super.initState();
+    getPost();
+  }
+
+  Future<void> getPost() async {
+    try {
+      CollectionReference postCollection =
+          FirebaseFirestore.instance.collection('User Post');
+      QuerySnapshot<Object?> snapshot = await postCollection
+          .where('email', isEqualTo: currentUser.email)
+          .get();
+      // ignore: prefer_is_empty
+      if (snapshot.docs.length > 0) {
+        for (int i = 0; i < snapshot.docs.length && i < 20; i++) {
+          String email = snapshot.docs[i].get('email');
+          DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+              .collection('Users')
+              .doc(email)
+              .get();
+          Map<String, dynamic> data =
+              docSnapshot.data() as Map<String, dynamic>;
+          String name = data['name'];
+          String userUrlProfile = data['urlProfile'];
+          String userContent = snapshot.docs[i].get('postingan');
+          String getDocId = snapshot.docs[i].id; // Get the document ID
+          String getTopic = snapshot.docs[i].get('kategori');
+          int userCommentCount = snapshot.docs[i].get('commentCount');
+          int userTimestamp = snapshot.docs[i].get('timestamp');
+          setState(() {
+            if (docSnapshot.exists) {
+              posts.add(
+                Post(
+                  idPost: getDocId,
+                  idTopic: getTopic,
+                  profileUser: userUrlProfile,
+                  nameUser: name,
+                  content: userContent,
+                  votes: userCommentCount,
+                  timestamp: userTimestamp,
+                ),
+              );
+            }
+          });
+        }
+      } // Trigger a rebuild after retrieving the posts
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+            style: semiPoppins,
+          ),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -194,17 +255,7 @@ class _ProfilePageState extends State<ProfilePage> {
                                 fontSize: 24, color: whiteColor),
                           ),
                         ),
-                        PostCardProfile(
-                          Post(
-                            idPost: '1',
-                            idTopic: '1',
-                            profileUser: "ok",
-                            nameUser: 'Username',
-                            content: 'Test post 1',
-                            votes: 122,
-                            timestamp: 1688127705,
-                          ),
-                        ),
+                        ...posts.map((post) => PostCardProfile(post)).toList(),
                       ],
                     )),
               ),

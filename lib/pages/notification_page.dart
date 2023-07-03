@@ -60,25 +60,13 @@ class _NotificationPageState extends State<NotificationPage> {
                     NotificationUser(
                       Notifications(
                         idNotif: 1,
-                        message: 'Anda punya pertanyaan baru!',
+                        message: 'Ada yang berkomentar!',
                       ),
                     ),
                     NotificationUser(
                       Notifications(
                         idNotif: 2,
-                        message: 'Pertanyaan Anda dijawab!',
-                      ),
-                    ),
-                    NotificationUser(
-                      Notifications(
-                        idNotif: 1,
-                        message: 'Anda punya pertanyaan baru!',
-                      ),
-                    ),
-                    NotificationUser(
-                      Notifications(
-                        idNotif: 2,
-                        message: 'Pertanyaan Anda dijawab!',
+                        message: 'Ada yang berkomentar!',
                       ),
                     ),
                   ],

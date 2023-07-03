@@ -47,7 +47,7 @@ class _TopicPostPageState extends State<TopicPostPage> {
               int userTimestamp = snapshot.docs[i].get('timestamp');
               posts.add(
                 Post(
-                  idPost: '1',
+                  idPost: email,
                   idTopic: widget.name,
                   profileUser: userUrlProfile,
                   nameUser: name,

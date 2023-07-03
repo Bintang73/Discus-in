@@ -69,8 +69,8 @@ class _PostCardProfileState extends State<PostCardProfile> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(100),
-                    child: Image.asset(
-                      'assets/captcha/1.jpg',
+                    child: Image.network(
+                      widget.post.profileUser,
                       height: 30,
                       width: 30,
                       fit: BoxFit.cover,

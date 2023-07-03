@@ -16,7 +16,6 @@ class _PostPageState extends State<PostPage> {
   final TextEditingController _textdiscus = TextEditingController();
   bool isSnackbarShown = false;
 
-  // user data
   final currentUser = FirebaseAuth.instance.currentUser!;
 
   // add post user
