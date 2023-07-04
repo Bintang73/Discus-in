@@ -99,14 +99,18 @@ class _PostCardProfileState extends State<PostCardProfile> {
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 20),
-            child: Flexible(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  widget.post.content,
-                  style: regularPoppins.copyWith(fontSize: 12),
+            child: Row(
+              children: [
+                Flexible(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      widget.post.content,
+                      style: regularPoppins.copyWith(fontSize: 12),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
           Row(
