@@ -1,5 +1,5 @@
 class Users {
-  int idUser;
+  String idUser;
   String name;
   String bio;
   String urlProfile;
