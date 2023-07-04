@@ -14,7 +14,9 @@ class TopicPostPage extends StatefulWidget {
 
 class _TopicPostPageState extends State<TopicPostPage> {
   List<Post> posts = [];
+  List<Post> filteredPosts = [];
   TextEditingController search = TextEditingController();
+  bool isLoading = true;
 
   @override
   void initState() {
@@ -28,39 +30,47 @@ class _TopicPostPageState extends State<TopicPostPage> {
           FirebaseFirestore.instance.collection('User Post');
       QuerySnapshot<Object?> snapshot =
           await postCollection.where('kategori', isEqualTo: widget.name).get();
-      // ignore: prefer_is_empty
-      if (snapshot.docs.length > 0) {
+      if (snapshot.docs.isNotEmpty) {
         for (int i = 0; i < snapshot.docs.length && i < 20; i++) {
           String email = snapshot.docs[i].get('email');
           DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
               .collection('Users')
               .doc(email)
               .get();
-          setState(() {
-            if (docSnapshot.exists) {
-              Map<String, dynamic> data =
-                  docSnapshot.data() as Map<String, dynamic>;
-              String name = data['name'];
-              String userUrlProfile = data['urlProfile'];
-              String userContent = snapshot.docs[i].get('postingan');
-              int userCommentCount = snapshot.docs[i].get('commentCount');
-              int userTimestamp = snapshot.docs[i].get('timestamp');
-              posts.add(
-                Post(
-                  idPost: email,
-                  idTopic: widget.name,
-                  profileUser: userUrlProfile,
-                  nameUser: name,
-                  content: userContent,
-                  votes: userCommentCount,
-                  timestamp: userTimestamp,
-                ),
-              );
-            }
-          });
+          if (docSnapshot.exists) {
+            Map<String, dynamic> data =
+                docSnapshot.data() as Map<String, dynamic>;
+            String name = data['name'];
+            String userUrlProfile = data['urlProfile'];
+            String userContent = snapshot.docs[i].get('postingan');
+            int userCommentCount = snapshot.docs[i].get('commentCount');
+            int userTimestamp = snapshot.docs[i].get('timestamp');
+            posts.add(
+              Post(
+                idPost: email,
+                idTopic: widget.name,
+                profileUser: userUrlProfile,
+                nameUser: name,
+                content: userContent,
+                votes: userCommentCount,
+                timestamp: userTimestamp,
+              ),
+            );
+          }
         }
-      } // Trigger a rebuild after retrieving the posts
+        setState(() {
+          filteredPosts = posts; // Initialize filteredPosts with all posts
+          isLoading = false;
+        });
+      } else {
+        setState(() {
+          isLoading = false;
+        });
+      }
     } catch (e) {
+      setState(() {
+        isLoading = false;
+      });
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -71,6 +81,17 @@ class _TopicPostPageState extends State<TopicPostPage> {
         ),
       );
     }
+  }
+
+  void searchPosts(String query) {
+    setState(() {
+      filteredPosts = posts.where((post) {
+        final String content = post.content.toLowerCase();
+        final String nameUser = post.nameUser.toLowerCase();
+        final String queryLower = query.toLowerCase();
+        return content.contains(queryLower) || nameUser.contains(queryLower);
+      }).toList();
+    });
   }
 
   @override
@@ -104,6 +125,7 @@ class _TopicPostPageState extends State<TopicPostPage> {
               child: TextField(
                 controller: search,
                 style: regularPoppins.copyWith(fontSize: 14),
+                onChanged: (query) => searchPosts(query),
                 decoration: InputDecoration(
                   filled: true,
                   fillColor: whiteColor,
@@ -125,14 +147,18 @@ class _TopicPostPageState extends State<TopicPostPage> {
                 ),
               ),
             ),
-            if (posts.isEmpty)
+            if (isLoading)
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+            if (!isLoading && filteredPosts.isEmpty)
               Center(
                 child: Text(
                   'No data available',
                   style: semiPoppins.copyWith(fontSize: 16, color: whiteColor),
                 ),
               ),
-            ...posts.map((post) => PostCard(post)).toList(),
+            ...filteredPosts.map((post) => PostCard(post)).toList(),
           ],
         ),
       ),
