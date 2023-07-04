@@ -100,14 +100,18 @@ class _PostCardState extends State<PostCard> {
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 20),
-            child: Flexible(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  widget.post.content,
-                  style: regularPoppins.copyWith(fontSize: 12),
+            child: Row(
+              children: [
+                Flexible(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      widget.post.content,
+                      style: regularPoppins.copyWith(fontSize: 12),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
           Row(
@@ -176,7 +180,7 @@ class _PostCardState extends State<PostCard> {
                       votes: widget.post.votes,
                       idPost: '1',
                       idTopic: '2',
-                      profileUser: 'ok',
+                      profileUser: widget.post.profileUser,
                       timestamp: 1688127705,
                     );
                   }));

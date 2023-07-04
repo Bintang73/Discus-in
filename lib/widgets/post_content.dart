@@ -69,8 +69,8 @@ class _PostContentState extends State<PostContent> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(100),
-                    child: Image.asset(
-                      'assets/captcha/1.jpg',
+                    child: Image.network(
+                      widget.post.profileUser,
                       height: 35,
                       width: 35,
                       fit: BoxFit.cover,
@@ -99,14 +99,18 @@ class _PostContentState extends State<PostContent> {
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 20),
-            child: Flexible(
-              child: Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  widget.post.content,
-                  style: regularPoppins.copyWith(fontSize: 12),
+            child: Row(
+              children: [
+                Flexible(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      widget.post.content,
+                      style: regularPoppins.copyWith(fontSize: 12),
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
           Row(

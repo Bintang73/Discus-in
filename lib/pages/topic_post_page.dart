@@ -125,6 +125,13 @@ class _TopicPostPageState extends State<TopicPostPage> {
                 ),
               ),
             ),
+            if (posts.isEmpty)
+              Center(
+                child: Text(
+                  'No data available',
+                  style: semiPoppins.copyWith(fontSize: 16, color: whiteColor),
+                ),
+              ),
             ...posts.map((post) => PostCard(post)).toList(),
           ],
         ),
