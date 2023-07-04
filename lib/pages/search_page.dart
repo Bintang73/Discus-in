@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/user.dart';
 import 'package:stalkin/widgets/search_card.dart';
@@ -13,6 +14,8 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   TextEditingController search = TextEditingController();
+  String searchQuery = '';
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,8 +38,7 @@ class _SearchPageState extends State<SearchPage> {
                 margin: const EdgeInsets.only(top: 25),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment
-                      .start, // Aligns the text vertically at the center
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 32),
@@ -74,6 +76,11 @@ class _SearchPageState extends State<SearchPage> {
                       ),
                       child: TextField(
                         controller: search,
+                        onChanged: (value) {
+                          setState(() {
+                            searchQuery = value;
+                          });
+                        },
                         style: regularPoppins.copyWith(fontSize: 14),
                         decoration: InputDecoration(
                           filled: true,
@@ -97,35 +104,47 @@ class _SearchPageState extends State<SearchPage> {
                         ),
                       ),
                     ),
-                    SearchUsers(
-                      Users(
-                        idUser: 1,
-                        name: 'Anton',
-                        bio: 'Ini bio Anton',
-                        urlProfile: 'assets/captcha/1.jpg',
-                      ),
-                    ),
-                    SearchUsers(
-                      Users(
-                        idUser: 2,
-                        name: 'Beni',
-                        bio: 'Ini bio Beni',
-                        urlProfile: 'assets/captcha/2.jpg',
-                      ),
-                    ),
-                    SearchUsers(
-                      Users(
-                        idUser: 3,
-                        name: 'Rusdi',
-                        bio: 'Ini bio Rusdi',
-                        urlProfile: 'assets/captcha/3.jpg',
-                      ),
+                    StreamBuilder<QuerySnapshot>(
+                      stream: FirebaseFirestore.instance
+                          .collection('Users')
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          final users = snapshot.data?.docs.map((doc) {
+                            final String id = doc.id;
+                            final String name = doc['name'];
+                            final String bio = doc['bio'];
+                            final String img = doc['urlProfile'];
+                            return Users(
+                                idUser: id,
+                                name: name,
+                                bio: bio,
+                                urlProfile: img);
+                          }).where((user) {
+                            final lowerCaseQuery = searchQuery.toLowerCase();
+                            final lowerCaseName = user.name.toLowerCase();
+                            return lowerCaseName.contains(lowerCaseQuery);
+                          }).toList();
+                          if (users != null && users.isNotEmpty) {
+                            return Column(
+                              children: users
+                                  .map((user) => SearchUsers(user))
+                                  .toList(),
+                            );
+                          } else {
+                            return Text(
+                              'No results found.',
+                              style: semiPoppins.copyWith(
+                                  fontSize: 24, color: whiteColor),
+                            );
+                          }
+                        }
+                        return const SizedBox(); // Return an empty widget if there's no data
+                      },
                     ),
                   ],
                 ),
               ),
-
-              // Add your remaining ListView children here
             ]),
           ),
         ],

@@ -68,32 +68,30 @@ class _ViewUsersPageState extends State<ViewUsersPage> {
                 ],
               ),
             ),
-            Container(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                        horizontal: 28, vertical: 10),
-                    child: Text(
-                      'My Post',
-                      style:
-                          semiPoppins.copyWith(fontSize: 24, color: whiteColor),
-                    ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin:
+                      const EdgeInsets.symmetric(horizontal: 28, vertical: 10),
+                  child: Text(
+                    'My Post',
+                    style:
+                        semiPoppins.copyWith(fontSize: 24, color: whiteColor),
                   ),
-                  PostCard(
-                    Post(
-                      idPost: '1',
-                      idTopic: '1',
-                      profileUser: 'ok',
-                      nameUser: 'Username',
-                      content: 'Test post 1',
-                      votes: 122,
-                      timestamp: 1688127705,
-                    ),
+                ),
+                PostCard(
+                  Post(
+                    idPost: '1',
+                    idTopic: '1',
+                    profileUser: 'ok',
+                    nameUser: 'Username',
+                    content: 'Test post 1',
+                    votes: 122,
+                    timestamp: 1688127705,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
