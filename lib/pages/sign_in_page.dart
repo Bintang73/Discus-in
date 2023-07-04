@@ -36,6 +36,7 @@ class _SignInPageState extends State<SignInPage> {
             style: semiPoppins,
           ),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 1),
         ),
       );
     }
@@ -101,6 +102,7 @@ class _SignInPageState extends State<SignInPage> {
                           style: semiPoppins,
                         ),
                         backgroundColor: Colors.red,
+                        duration: const Duration(seconds: 1),
                       ),
                     );
                   }
@@ -137,6 +139,7 @@ class _SignInPageState extends State<SignInPage> {
             style: semiPoppins,
           ),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 1),
         ),
       );
     } finally {
@@ -307,6 +310,7 @@ class _SignInPageState extends State<SignInPage> {
                               style: semiPoppins,
                             ),
                             backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 1),
                           ),
                         );
                       } else {

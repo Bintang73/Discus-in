@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/post.dart';
+import 'package:stalkin/widgets/not_found_card.dart';
 import 'package:stalkin/widgets/post_card.dart';
 import '../theme.dart';
 
@@ -78,6 +79,7 @@ class _TopicPostPageState extends State<TopicPostPage> {
             style: semiPoppins,
           ),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 1),
         ),
       );
     }
@@ -152,12 +154,7 @@ class _TopicPostPageState extends State<TopicPostPage> {
                 child: CircularProgressIndicator(),
               ),
             if (!isLoading && filteredPosts.isEmpty)
-              Center(
-                child: Text(
-                  'No data available',
-                  style: semiPoppins.copyWith(fontSize: 16, color: whiteColor),
-                ),
-              ),
+              const NotFoundCard(deskripsi: 'Belum ada postingan sama sekali.'),
             ...filteredPosts.map((post) => PostCard(post)).toList(),
           ],
         ),

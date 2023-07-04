@@ -48,7 +48,7 @@ class NotificationUser extends StatelessWidget {
                     votes: 1,
                     idPost: '1',
                     idTopic: '2',
-                    profileUser: 'ok',
+                    profileUser: "https://api.multiavatar.com/nizar.png",
                     timestamp: 1688127705,
                   );
                 }));

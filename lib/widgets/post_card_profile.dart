@@ -7,7 +7,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostCardProfile extends StatefulWidget {
   final Post post;
-  const PostCardProfile(this.post, {Key? key});
+  final Function(Post) onDelete;
+  const PostCardProfile({
+    required this.post,
+    required this.onDelete,
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<PostCardProfile> createState() => _PostCardProfileState();
@@ -105,63 +110,67 @@ class _PostCardProfileState extends State<PostCardProfile> {
                   ),
                 ],
               ),
-              IconButton(
-                icon: const Icon(Icons.delete),
-                onPressed: () {
+              GestureDetector(
+                onTap: () {
                   setState(() {
                     showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text('Konfirmasi'),
-                        content: Text('Apakah Anda yakin ingin menghapus ini?'),
-                        actions: [
-                          TextButton(
-                            child: Text('Batal'),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                          TextButton(
-                            child: Text('Hapus'),
-                            onPressed: () async {
-                              try {
-                                await FirebaseFirestore.instance
-                                    .collection('User Post')
-                                    .doc(widget.post.idPost)
-                                    .delete();
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Post deleted successfully',
-                                      style: semiPoppins,
-                                    ),
-                                    backgroundColor: Colors.green,
-                                  ),
-                                );
+                      context: context,
+                      builder: (context) {
+                        return AlertDialog(
+                          title: const Text('Konfirmasi'),
+                          content: const Text(
+                              'Apakah Anda yakin ingin menghapus ini?'),
+                          actions: [
+                            TextButton(
+                              child: const Text('Batal'),
+                              onPressed: () {
                                 Navigator.of(context).pop();
-                              } catch (e) {
-                                print(e);
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(
-                                      'Failed to delete post',
-                                      style: semiPoppins,
+                              },
+                            ),
+                            TextButton(
+                              child: const Text('Hapus'),
+                              onPressed: () async {
+                                try {
+                                  await FirebaseFirestore.instance
+                                      .collection('User Post')
+                                      .doc(widget.post.idPost)
+                                      .delete();
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Post deleted successfully',
+                                        style: semiPoppins,
+                                      ),
+                                      backgroundColor: Colors.green,
+                                      duration: const Duration(seconds: 1),
                                     ),
-                                    backgroundColor: Colors.red,
-                                  ),
-                                );
-                                Navigator.of(context).pop();
-                              }
-                            },
-                          ),
-                        ],
-                      );
-                    },
-                  );
+                                  );
+                                  widget.onDelete(widget.post);
+                                  Navigator.of(context).pop();
+                                } catch (e) {
+                                  print(e);
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        'Failed to delete post',
+                                        style: semiPoppins,
+                                      ),
+                                      backgroundColor: Colors.red,
+                                      duration: const Duration(seconds: 1),
+                                    ),
+                                  );
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                            ),
+                          ],
+                        );
+                      },
+                    );
                   });
                 },
-              ),
+                child: const Icon(Icons.delete),
+              )
             ],
           ),
           Container(
@@ -251,7 +260,7 @@ class _PostCardProfileState extends State<PostCardProfile> {
                       votes: widget.post.votes,
                       idPost: '1',
                       idTopic: '2',
-                      profileUser: 'ok',
+                      profileUser: widget.post.profileUser,
                       timestamp: 1688127705,
                     );
                   }));

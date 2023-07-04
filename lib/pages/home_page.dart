@@ -5,6 +5,7 @@ import 'package:shimmer/shimmer.dart';
 import 'package:stalkin/models/news.dart';
 import 'package:stalkin/models/topic.dart';
 import 'package:stalkin/widgets/news_card.dart';
+import 'package:stalkin/widgets/title.dart';
 import 'package:stalkin/widgets/topic_card.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -74,16 +75,14 @@ class _HomePageState extends State<HomePage> {
           ),
           SliverList(
             delegate: SliverChildListDelegate([
-              const SizedBox(height: 38),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text(
-                  'Berita',
-                  style: semiPoppins.copyWith(fontSize: 24, color: whiteColor),
-                ),
-              ),
-              const SizedBox(
-                height: 16,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 32),
+                    child: const MyTitle(title: 'Berita'),
+                  ),
+                ],
               ),
               FutureBuilder<List<dynamic>>(
                 future: fetchNews(),
@@ -161,19 +160,16 @@ class _HomePageState extends State<HomePage> {
                   }
                 },
               ),
-              const SizedBox(
-                height: 38,
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 32),
+                    child: const MyTitle(title: 'Topik'),
+                  ),
+                ],
               ),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 32),
-                child: Text(
-                  'Topik',
-                  style: semiPoppins.copyWith(fontSize: 24, color: whiteColor),
-                ),
-              ),
-              const SizedBox(
-                height: 16,
-              ),
+
               StreamBuilder<QuerySnapshot>(
                 stream:
                     FirebaseFirestore.instance.collection('Topic').snapshots(),

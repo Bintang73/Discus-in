@@ -46,6 +46,7 @@ class _PostPageState extends State<PostPage> {
             style: semiPoppins,
           ),
           backgroundColor: Colors.green,
+          duration: const Duration(seconds: 1),
         ),
       );
     } catch (e) {
@@ -56,6 +57,7 @@ class _PostPageState extends State<PostPage> {
             style: semiPoppins,
           ),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 1),
         ),
       );
     }
@@ -179,7 +181,7 @@ class _PostPageState extends State<PostPage> {
                       ),
                       Container(
                         margin: const EdgeInsets.only(bottom: 30),
-                        height: 300,
+                        height: 350,
                         width: double.infinity,
                         child: TextField(
                           controller: _textdiscus,
@@ -205,6 +207,7 @@ class _PostPageState extends State<PostPage> {
                         ),
                       ),
                       SizedBox(
+                        height: 40,
                         width: double.infinity,
                         child: ElevatedButton(
                           onPressed: () {
@@ -217,6 +220,7 @@ class _PostPageState extends State<PostPage> {
                                       style: semiPoppins,
                                     ),
                                     backgroundColor: Colors.red,
+                                    duration: const Duration(seconds: 1),
                                   ),
                                 );
                               } else {
@@ -266,6 +270,7 @@ class _PostPageState extends State<PostPage> {
                                         style: semiPoppins,
                                       ),
                                       backgroundColor: Colors.red,
+                                      duration: const Duration(seconds: 1),
                                     ),
                                   );
                                 }

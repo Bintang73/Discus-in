@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/user.dart';
+import 'package:stalkin/widgets/not_found_card.dart';
 import 'package:stalkin/widgets/search_card.dart';
 
 import '../theme.dart';
@@ -132,11 +133,8 @@ class _SearchPageState extends State<SearchPage> {
                                   .toList(),
                             );
                           } else {
-                            return Text(
-                              'No results found.',
-                              style: semiPoppins.copyWith(
-                                  fontSize: 24, color: whiteColor),
-                            );
+                            return const NotFoundCard(
+                                deskripsi: 'User tidak ditemukan.');
                           }
                         }
                         return const SizedBox(); // Return an empty widget if there's no data

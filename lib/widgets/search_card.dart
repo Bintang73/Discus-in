@@ -35,7 +35,7 @@ class SearchUsers extends StatelessWidget {
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(100),
-                  child: Image.asset(
+                  child: Image.network(
                     user.urlProfile,
                     height: 30,
                     width: 30,
@@ -58,6 +58,7 @@ class SearchUsers extends StatelessWidget {
                     urlProfile: user.urlProfile,
                     name: user.name,
                     bio: user.bio,
+                    email: user.idUser,
                   );
                 }));
               },

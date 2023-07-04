@@ -50,6 +50,7 @@ class _SettingPageState extends State<SettingPage> {
               style: semiPoppins,
             ),
             backgroundColor: Colors.green,
+            duration: const Duration(seconds: 1),
           ),
         );
       }
@@ -61,6 +62,7 @@ class _SettingPageState extends State<SettingPage> {
             style: semiPoppins,
           ),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 1),
         ),
       );
     }
