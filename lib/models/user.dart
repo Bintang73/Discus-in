@@ -3,6 +3,7 @@ class Users {
   String name;
   String bio;
   String urlProfile;
+  
 
   Users({
     required this.idUser,

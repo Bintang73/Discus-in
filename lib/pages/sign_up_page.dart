@@ -47,6 +47,7 @@ class _SignUpPageState extends State<SignUpPage> {
             style: semiPoppins,
           ),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 1),
         ),
       );
     }
@@ -90,6 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
             style: semiPoppins,
           ),
           backgroundColor: Colors.red,
+          duration: const Duration(seconds: 1),
         ));
       }
     } on FirebaseAuthException catch (e) {
@@ -99,6 +101,7 @@ class _SignUpPageState extends State<SignUpPage> {
           style: semiPoppins,
         ),
         backgroundColor: Colors.red,
+        duration: const Duration(seconds: 1),
       ));
     } finally {
       Navigator.of(context).pop();
@@ -183,6 +186,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           style: semiPoppins,
                         ),
                         backgroundColor: Colors.red,
+                        duration: const Duration(seconds: 1),
                       ),
                     );
                   }
@@ -427,6 +431,7 @@ class _SignUpPageState extends State<SignUpPage> {
                               style: semiPoppins,
                             ),
                             backgroundColor: Colors.red,
+                            duration: const Duration(seconds: 1),
                           ),
                         );
                       } else {
