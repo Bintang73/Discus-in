@@ -22,7 +22,9 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   void initState() {
     super.initState();
-    getPost();
+    setState(() {
+      getPost();
+    });
   }
 
   Future<void> getPost() async {

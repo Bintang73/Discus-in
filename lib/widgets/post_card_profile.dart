@@ -3,10 +3,11 @@ import 'package:stalkin/pages/comment_page.dart';
 
 import '../models/post.dart';
 import '../theme.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostCardProfile extends StatefulWidget {
   final Post post;
-  const PostCardProfile(this.post, {super.key});
+  const PostCardProfile(this.post, {Key? key});
 
   @override
   State<PostCardProfile> createState() => _PostCardProfileState();
@@ -48,6 +49,14 @@ class _PostCardProfileState extends State<PostCardProfile> {
     }
   }
 
+  BuildContext? dialogContext;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    dialogContext = context;
+  }
+
   @override
   Widget build(BuildContext context) {
     final int timestampInSeconds = widget.post.timestamp;
@@ -59,7 +68,9 @@ class _PostCardProfileState extends State<PostCardProfile> {
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
       margin: const EdgeInsets.only(bottom: 20),
       decoration: BoxDecoration(
-          color: whiteColor, borderRadius: BorderRadius.circular(12)),
+        color: whiteColor,
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Column(
         children: [
           Row(
@@ -89,12 +100,68 @@ class _PostCardProfileState extends State<PostCardProfile> {
                       Text(
                         formattedDate,
                         style: regularPoppins.copyWith(fontSize: 10),
-                      )
+                      ),
                     ],
                   ),
                 ],
               ),
-              const Icon(Icons.delete)
+              IconButton(
+                icon: const Icon(Icons.delete),
+                onPressed: () {
+                  setState(() {
+                    showDialog(
+                    context: context,
+                    builder: (BuildContext context) {
+                      return AlertDialog(
+                        title: Text('Konfirmasi'),
+                        content: Text('Apakah Anda yakin ingin menghapus ini?'),
+                        actions: [
+                          TextButton(
+                            child: Text('Batal'),
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                            },
+                          ),
+                          TextButton(
+                            child: Text('Hapus'),
+                            onPressed: () async {
+                              try {
+                                await FirebaseFirestore.instance
+                                    .collection('User Post')
+                                    .doc(widget.post.idPost)
+                                    .delete();
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Post deleted successfully',
+                                      style: semiPoppins,
+                                    ),
+                                    backgroundColor: Colors.green,
+                                  ),
+                                );
+                                Navigator.of(context).pop();
+                              } catch (e) {
+                                print(e);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      'Failed to delete post',
+                                      style: semiPoppins,
+                                    ),
+                                    backgroundColor: Colors.red,
+                                  ),
+                                );
+                                Navigator.of(context).pop();
+                              }
+                            },
+                          ),
+                        ],
+                      );
+                    },
+                  );
+                  });
+                },
+              ),
             ],
           ),
           Container(
@@ -117,8 +184,9 @@ class _PostCardProfileState extends State<PostCardProfile> {
                   Container(
                     padding: const EdgeInsets.all(2),
                     decoration: BoxDecoration(
-                        color: secondaryColor,
-                        borderRadius: BorderRadius.circular(12)),
+                      color: secondaryColor,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: Row(
                       children: [
                         Container(
@@ -193,7 +261,7 @@ class _PostCardProfileState extends State<PostCardProfile> {
                     Text(
                       'Lihat',
                       style: boldPoppins.copyWith(fontSize: 14),
-                    )
+                    ),
                   ],
                 ),
               ),
