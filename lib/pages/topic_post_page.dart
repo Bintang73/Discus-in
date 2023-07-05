@@ -44,12 +44,14 @@ class _TopicPostPageState extends State<TopicPostPage> {
             String name = data['name'];
             String userUrlProfile = data['urlProfile'];
             String userContent = snapshot.docs[i].get('postingan');
+            String getDocId = snapshot.docs[i].id;
+            String getTopic = snapshot.docs[i].get('kategori');
             int userCommentCount = snapshot.docs[i].get('commentCount');
             int userTimestamp = snapshot.docs[i].get('timestamp');
             posts.add(
               Post(
-                idPost: email,
-                idTopic: widget.name,
+                idPost: getDocId,
+                idTopic: getTopic,
                 profileUser: userUrlProfile,
                 nameUser: name,
                 content: userContent,

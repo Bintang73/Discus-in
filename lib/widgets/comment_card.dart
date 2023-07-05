@@ -5,7 +5,9 @@ import '../theme.dart';
 class CommentCard extends StatefulWidget {
   final Comment comment;
   final String name;
-  const CommentCard(this.comment, {super.key, required this.name});
+  final String urlProfile;
+
+  const CommentCard(this.comment, {super.key, required this.name, required this.urlProfile});
 
   @override
   State<CommentCard> createState() => _CommentCardState();
@@ -66,8 +68,8 @@ class _CommentCardState extends State<CommentCard> {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(100),
-                child: Image.asset(
-                  'assets/captcha/1.jpg',
+                child: Image.network(
+                  widget.urlProfile,
                   height: 30,
                   width: 30,
                   fit: BoxFit.cover,

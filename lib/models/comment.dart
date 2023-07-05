@@ -1,7 +1,6 @@
 class Comment {
-  int idComment;
-  int idPost;
-  int idUser;
+  String idComment;
+  String idPost;
   String content;
   int votes;
   int timeStamp;
@@ -9,7 +8,6 @@ class Comment {
   Comment({
     required this.idComment,
     required this.idPost,
-    required this.idUser,
     required this.content,
     required this.votes,
     required this.timeStamp,
