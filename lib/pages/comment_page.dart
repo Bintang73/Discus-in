@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/post.dart';
 import 'package:stalkin/theme.dart';
@@ -32,6 +34,41 @@ class CommentPage extends StatefulWidget {
 
 class _CommentPageState extends State<CommentPage> {
   final TextEditingController commentController = TextEditingController();
+  final currentUser = FirebaseAuth.instance.currentUser!;
+
+  void addComment(String commentText) async {
+    CollectionReference commentsRef = FirebaseFirestore.instance
+        .collection('User Post')
+        .doc(widget.idPost)
+        .collection('Comments');
+
+    DocumentReference newCommentRef =
+        commentsRef.doc(); // Generate a new document reference
+
+    DateTime now = DateTime.now();
+    int timestamp = now.millisecondsSinceEpoch ~/ 1000;
+
+    DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+        .collection('Users')
+        .doc(currentUser.email)
+        .get();
+
+    final userData = userSnapshot.data() as Map<String, dynamic>;
+
+    newCommentRef.set({
+      'likedBy': [],
+      'dislikedBy': [],
+      'votes': 0,
+      'idComment': newCommentRef.id, // Use the ID of the new comment document
+      'idPost': widget.idPost,
+      'idTopic': widget.idTopic,
+      'CommentText': commentText,
+      'CommentedBy': userData['name'],
+      'profile': userData['urlProfile'],
+      'CommentTime': timestamp,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,36 +76,51 @@ class _CommentPageState extends State<CommentPage> {
       body: SafeArea(
         child: ListView(
           children: [
-            PostContent(Post(
-              idPost: widget.idPost,
-              idTopic: widget.idTopic,
-              profileUser: widget.profileUser,
-              nameUser: widget.name,
-              content: widget.content,
-              votes: widget.votes,
-              timestamp: widget.timestamp,
-            )),
-            CommentCard(
-              Comment(
-                idComment: 1,
-                idPost: 1,
-                idUser: 2,
-                content: 'Test Comment',
-                votes: 4,
-                timeStamp: 1688127705,
+            PostContent(
+              Post(
+                idPost: widget.idPost,
+                idTopic: widget.idTopic,
+                profileUser: widget.profileUser,
+                nameUser: widget.name,
+                content: widget.content,
+                votes: widget.votes,
+                timestamp: widget.timestamp,
               ),
-              name: 'Anton',
             ),
-            CommentCard(
-              Comment(
-                idComment: 1,
-                idPost: 1,
-                idUser: 2,
-                content: 'Hmm Menarik',
-                votes: 100,
-                timeStamp: 1688127705,
-              ),
-              name: 'Budi',
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('User Post')
+                  .doc(widget.idPost)
+                  .collection('Comments')
+                  .orderBy('CommentTime', descending: false)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                // show loading circle if no data
+                if (!snapshot.hasData) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+                return ListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  children: snapshot.data!.docs.map((doc) {
+                    final commentData = doc.data() as Map<String, dynamic>;
+
+                    return CommentCard(
+                      Comment(
+                        idComment: commentData['idComment'],
+                        idPost: commentData['idPost'],
+                        content: commentData['CommentText'],
+                        votes: commentData['votes'],
+                        timeStamp: commentData['CommentTime'],
+                      ),
+                      name: commentData['CommentedBy'],
+                      urlProfile: commentData['profile'],
+                    );
+                  }).toList(),
+                );
+              },
             ),
             Container(
               margin: const EdgeInsets.only(left: 20, right: 20, bottom: 16),
@@ -89,7 +141,10 @@ class _CommentPageState extends State<CommentPage> {
                 style: regularPoppins.copyWith(fontSize: 14),
                 decoration: InputDecoration(
                   suffixIcon: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      addComment(commentController.text);
+                      commentController.clear();
+                    },
                     child: Icon(
                       Icons.send,
                       color: blackColor,
@@ -107,7 +162,7 @@ class _CommentPageState extends State<CommentPage> {
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  hintText: 'Comment',
+                  hintText: 'Add Comment',
                 ),
               ),
             ),

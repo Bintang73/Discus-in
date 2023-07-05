@@ -178,8 +178,8 @@ class _PostCardState extends State<PostCard> {
                       name: widget.post.nameUser,
                       content: widget.post.content,
                       votes: widget.post.votes,
-                      idPost: '1',
-                      idTopic: '2',
+                      idPost: widget.post.idPost,
+                      idTopic: widget.post.idTopic,
                       profileUser: widget.post.profileUser,
                       timestamp: 1688127705,
                     );
