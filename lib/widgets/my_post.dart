@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:stalkin/widgets/post_card_profile.dart';
-import 'package:stalkin/widgets/title.dart';
 
 import '../models/post.dart';
 import '../theme.dart';
@@ -94,29 +94,69 @@ class _MyPostState extends State<MyPost> {
       backgroundColor: mainColor,
       body: Container(
         margin: EdgeInsets.only(left: 32, right: 32, top: 20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (isLoading)
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 20),
-                alignment: Alignment.center,
-                child: const CircularProgressIndicator(),
-              ),
-            if (!isLoading && posts.isEmpty)
-              const NotFoundCard(
-                deskripsi: 'Anda belum membuat postingan apapun.',
-              ),
-            if (!isLoading && posts.isNotEmpty)
-              ...posts
-                  .map(
-                    (post) => PostCardProfile(
-                      post: post,
-                      onDelete: deletePost,
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              if (isLoading)
+                Column(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 26),
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey,
+                        highlightColor: Colors.white,
+                        child: Container(
+                          height: 180,
+                          decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
                     ),
-                  )
-                  .toList(),
-          ],
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 26),
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey,
+                        highlightColor: Colors.white,
+                        child: Container(
+                          height: 180,
+                          decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                    ),
+                    Container(
+                      margin: const EdgeInsets.only(bottom: 26),
+                      child: Shimmer.fromColors(
+                        baseColor: Colors.grey,
+                        highlightColor: Colors.white,
+                        child: Container(
+                          height: 180,
+                          decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(12)),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              if (!isLoading && posts.isEmpty)
+                const NotFoundCard(
+                  deskripsi: 'Anda belum membuat postingan apapun.',
+                ),
+              if (!isLoading && posts.isNotEmpty)
+                ...posts
+                    .map(
+                      (post) => PostCardProfile(
+                        post: post,
+                        onDelete: deletePost,
+                      ),
+                    )
+                    .toList(),
+            ],
+          ),
         ),
       ),
     );

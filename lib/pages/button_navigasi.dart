@@ -3,7 +3,6 @@ import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:stalkin/pages/home_page.dart';
 import 'package:stalkin/pages/notification_page.dart';
 import 'package:stalkin/pages/post_page.dart';
-import 'package:stalkin/pages/profile_page%20test.dart';
 import 'package:stalkin/pages/profile_page.dart';
 import 'package:stalkin/pages/search_page.dart';
 
@@ -23,7 +22,7 @@ class _MyNavigationState extends State<MyNavigation> {
     SearchPage(),
     PostPage(),
     NotificationPage(),
-    ProfilePageTest()
+    ProfilePage()
   ];
   @override
   Widget build(BuildContext context) {

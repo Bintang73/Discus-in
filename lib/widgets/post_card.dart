@@ -290,7 +290,7 @@ class _PostCardState extends State<PostCard> {
                       content: widget.post.content,
                       votes: widget.post.votes,
                       idPost: widget.post.idPost,
-                      idTopic: '2',
+                      idTopic: widget.post.idTopic,
                       profileUser: widget.post.profileUser,
                       timestamp: widget.post.timestamp,
                     );

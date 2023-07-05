@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:stalkin/models/post.dart';
 import 'package:stalkin/widgets/not_found_card.dart';
 import 'package:stalkin/widgets/post_card.dart';
@@ -153,8 +154,51 @@ class _TopicPostPageState extends State<TopicPostPage> {
               ),
             ),
             if (isLoading)
-              const Center(
-                child: CircularProgressIndicator(),
+              Column(
+                children: [
+                  Container(
+                    margin:
+                        const EdgeInsets.only(left: 32, right: 32, bottom: 26),
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey,
+                      highlightColor: Colors.white,
+                      child: Container(
+                        height: 180,
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin:
+                        const EdgeInsets.only(left: 32, right: 32, bottom: 26),
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey,
+                      highlightColor: Colors.white,
+                      child: Container(
+                        height: 180,
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+                  Container(
+                    margin:
+                        const EdgeInsets.only(left: 32, right: 32, bottom: 26),
+                    child: Shimmer.fromColors(
+                      baseColor: Colors.grey,
+                      highlightColor: Colors.white,
+                      child: Container(
+                        height: 180,
+                        decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(12)),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             if (!isLoading && filteredPosts.isEmpty)
               const NotFoundCard(deskripsi: 'Belum ada postingan sama sekali.'),

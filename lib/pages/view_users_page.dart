@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:stalkin/theme.dart';
 import 'package:stalkin/widgets/not_found_card.dart';
 import 'package:stalkin/widgets/post_card.dart';
 import 'package:stalkin/widgets/title.dart';
 
 import '../models/post.dart';
+import '../widgets/my_post.dart';
 
 class ViewUsersPage extends StatefulWidget {
   final String urlProfile;
@@ -91,76 +93,149 @@ class _ViewUsersPageState extends State<ViewUsersPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: mainColor,
-      body: SafeArea(
-        child: ListView(
-          children: [
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 42),
-              decoration: BoxDecoration(
-                color: whiteColor,
-              ),
-              child: Column(
-                children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 12),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(100),
-                            child: Image.network(
-                              widget.urlProfile,
-                              height: 80,
-                              width: 80,
-                              fit: BoxFit.cover,
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        backgroundColor: mainColor,
+        body: SafeArea(
+          child: Column(
+            children: [
+              Container(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 42),
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                ),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      width: double.infinity,
+                      child: Column(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image.network(
+                                widget.urlProfile,
+                                height: 80,
+                                width: 80,
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
-                        ),
-                        Container(
-                          margin: const EdgeInsets.only(bottom: 8),
-                          child: Text(
-                            widget.name,
-                            style: semiPoppins.copyWith(fontSize: 16),
+                          Container(
+                            margin: const EdgeInsets.only(bottom: 8),
+                            child: Text(
+                              widget.name,
+                              style: semiPoppins.copyWith(fontSize: 16),
+                            ),
                           ),
-                        ),
-                        Text(
-                          '"${widget.bio}"',
-                          textAlign: TextAlign.center,
-                          style: regularPoppins.copyWith(fontSize: 12),
-                        ),
-                      ],
+                          Text(
+                            '"${widget.bio}"',
+                            textAlign: TextAlign.center,
+                            style: regularPoppins.copyWith(fontSize: 12),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 32),
-                    child: MyTitle(title: '${widget.name}\'s Posts')),
-                if (isLoading)
-                  Container(
-                    margin: const EdgeInsets.symmetric(vertical: 20),
-                    alignment: Alignment.center,
-                    child: const CircularProgressIndicator(),
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                height: 45,
+                decoration: BoxDecoration(
+                  color: whiteColor,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: TabBar(
+                  indicator: BoxDecoration(
+                    color: secondaryColor,
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                if (!isLoading && posts.isEmpty)
-                  const NotFoundCard(
-                      deskripsi: 'You have not posted anything yet.'),
-                if (!isLoading && posts.isNotEmpty)
-                  ...posts
-                      .map(
-                        (post) => PostCard(post),
-                      )
-                      .toList(),
-              ],
-            ),
-          ],
+                  labelColor: blackColor,
+                  labelStyle: semiPoppins,
+                  tabs: [
+                    Tab(text: "${widget.name}'s Post"),
+                    const Tab(text: "Bookmark"),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: TabBarView(
+                  children: [
+                    // user post
+                    SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (isLoading)
+                            Column(
+                              children: [
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                      left: 32, right: 32, bottom: 26),
+                                  child: Shimmer.fromColors(
+                                    baseColor: Colors.grey,
+                                    highlightColor: Colors.white,
+                                    child: Container(
+                                      height: 180,
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.circular(12)),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                      left: 32, right: 32, bottom: 26),
+                                  child: Shimmer.fromColors(
+                                    baseColor: Colors.grey,
+                                    highlightColor: Colors.white,
+                                    child: Container(
+                                      height: 180,
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.circular(12)),
+                                    ),
+                                  ),
+                                ),
+                                Container(
+                                  margin: const EdgeInsets.only(
+                                      left: 32, right: 32, bottom: 26),
+                                  child: Shimmer.fromColors(
+                                    baseColor: Colors.grey,
+                                    highlightColor: Colors.white,
+                                    child: Container(
+                                      height: 180,
+                                      decoration: BoxDecoration(
+                                          color: Colors.grey,
+                                          borderRadius: BorderRadius.circular(12)),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          if (!isLoading && posts.isEmpty)
+                            const NotFoundCard(
+                                deskripsi: 'You have not posted anything yet.'),
+                          if (!isLoading && posts.isNotEmpty)
+                            ...posts
+                                .map(
+                                  (post) => PostCard(post),
+                                )
+                                .toList(),
+                        ],
+                      ),
+                    ),
+                    // Bookmark
+                    const Text('bookmark'),
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );
