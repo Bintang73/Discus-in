@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:stalkin/pages/comment_page.dart';
 import '../models/post.dart';
 import '../theme.dart';
@@ -13,8 +15,93 @@ class PostCard extends StatefulWidget {
 }
 
 class _PostCardState extends State<PostCard> {
+  final currentUser = FirebaseAuth.instance.currentUser!;
   bool isUpvoted = false;
   bool isDownvoted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (currentUser.email != null) {
+      setState(() {
+        checkStringInArrayField(
+            "likeby", widget.post.idPost, currentUser.email!);
+        checkStringInArrayField(
+            "dislikeby", widget.post.idPost, currentUser.email!);
+      });
+    }
+  }
+
+  void checkStringInArrayField(
+      String fieldName, String documentId, String searchString) {
+    FirebaseFirestore.instance
+        .collection('User Post')
+        .doc(documentId)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        final data = documentSnapshot.data() as Map<String, dynamic>;
+        if (data.containsKey(fieldName) && data[fieldName] is List) {
+          final arrayField = data[fieldName] as List<dynamic>;
+          if (arrayField.contains(searchString)) {
+            setState(() {
+              if (fieldName == "likeby") {
+                isUpvoted = true;
+                isDownvoted = false;
+              } else {
+                isUpvoted = false;
+                isDownvoted = true;
+              }
+              print('String found in array field!');
+            });
+          } else {
+            setState(() {
+              if (fieldName == "likeby") {
+                isUpvoted = false;
+              } else {
+                isDownvoted = false;
+              }
+            });
+          }
+        } else {
+          print('Field $fieldName is not an array field in the document.');
+        }
+      } else {
+        print('Document not found.');
+      }
+    }).catchError((error) {
+      print('Failed to search field in array: $error');
+    });
+  }
+
+  void pushToArrayField(String fieldName, String documentId, String element) {
+    FirebaseFirestore.instance
+        .collection(
+            'User Post') // Replace 'your_collection' with the actual collection name
+        .doc(documentId) // Replace documentId with the ID of the document
+        .update({
+      fieldName: FieldValue.arrayUnion([element]),
+    }).then((value) {
+      print('Element pushed successfully to array field!');
+    }).catchError((error) {
+      print('Failed to push element to array field: $error');
+    });
+  }
+
+  void removeFromArrayField(
+      String fieldName, String documentId, String element) {
+    FirebaseFirestore.instance
+        .collection(
+            'User Post') // Replace 'your_collection' with the actual collection name
+        .doc(documentId) // Replace documentId with the ID of the document
+        .update({
+      fieldName: FieldValue.arrayRemove([element]),
+    }).then((value) {
+      print('Element removed successfully from array field!');
+    }).catchError((error) {
+      print('Failed to remove element from array field: $error');
+    });
+  }
 
   // ignore: no_leading_underscores_for_local_identifiers
   String _getMonth(int month) {
@@ -131,10 +218,22 @@ class _PostCardState extends State<PostCard> {
                           setState(() {
                             isUpvoted = !isUpvoted;
                             isDownvoted = false; // Reset the downvote state
+                            removeFromArrayField("dislikeby",
+                                widget.post.idPost, currentUser.email!);
                             if (isUpvoted) {
-                              widget.post.votes++;
+                              pushToArrayField("likeby", widget.post.idPost,
+                                  currentUser.email!);
+                              widget.post.votes = widget.post.votes == -1
+                                  ? widget.post.votes += 2
+                                  : widget.post.votes += 1;
+                              ;
                             } else {
-                              widget.post.votes--;
+                              removeFromArrayField("likeby", widget.post.idPost,
+                                  currentUser.email!);
+                              widget.post.votes = widget.post.votes == 1
+                                  ? widget.post.votes -= 1
+                                  : widget.post.votes -= 1;
+                              ;
                             }
                           });
                         },
@@ -155,10 +254,22 @@ class _PostCardState extends State<PostCard> {
                           setState(() {
                             isDownvoted = !isDownvoted;
                             isUpvoted = false; // Reset the upvote state
+                            removeFromArrayField("likeby", widget.post.idPost,
+                                currentUser.email!);
                             if (isDownvoted) {
-                              widget.post.votes--;
+                              pushToArrayField("dislikeby", widget.post.idPost,
+                                  currentUser.email!);
+                              widget.post.votes = widget.post.votes == 1
+                                  ? widget.post.votes -= 2
+                                  : widget.post.votes -= 1;
+                              ;
                             } else {
-                              widget.post.votes++;
+                              removeFromArrayField("dislikeby",
+                                  widget.post.idPost, currentUser.email!);
+                              widget.post.votes = widget.post.votes == -1
+                                  ? widget.post.votes += 1
+                                  : widget.post.votes += 1;
+                              ;
                             }
                           });
                         },
@@ -179,9 +290,9 @@ class _PostCardState extends State<PostCard> {
                       content: widget.post.content,
                       votes: widget.post.votes,
                       idPost: widget.post.idPost,
-                      idTopic: widget.post.idTopic,
+                      idTopic: '2',
                       profileUser: widget.post.profileUser,
-                      timestamp: 1688127705,
+                      timestamp: widget.post.timestamp,
                     );
                   }));
                 },

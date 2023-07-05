@@ -47,6 +47,7 @@ class _TopicPostPageState extends State<TopicPostPage> {
             String getDocId = snapshot.docs[i].id;
             String getTopic = snapshot.docs[i].get('kategori');
             int userCommentCount = snapshot.docs[i].get('commentCount');
+            int likeCount = snapshot.docs[i].get('likeby').length;
             int userTimestamp = snapshot.docs[i].get('timestamp');
             posts.add(
               Post(
@@ -55,7 +56,7 @@ class _TopicPostPageState extends State<TopicPostPage> {
                 profileUser: userUrlProfile,
                 nameUser: name,
                 content: userContent,
-                votes: userCommentCount,
+                votes: likeCount,
                 timestamp: userTimestamp,
               ),
             );
