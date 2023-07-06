@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -229,7 +231,6 @@ class _CommentCardState extends State<CommentCard> {
                               widget.comment.votes = widget.comment.votes == -1
                                   ? widget.comment.votes += 2
                                   : widget.comment.votes += 1;
-                              ;
                             } else {
                               removeFromArrayField(
                                   "likedBy",
@@ -239,7 +240,6 @@ class _CommentCardState extends State<CommentCard> {
                               widget.comment.votes = widget.comment.votes == 1
                                   ? widget.comment.votes -= 1
                                   : widget.comment.votes -= 1;
-                              ;
                             }
                           });
                         },
@@ -274,7 +274,6 @@ class _CommentCardState extends State<CommentCard> {
                               widget.comment.votes = widget.comment.votes == 1
                                   ? widget.comment.votes -= 2
                                   : widget.comment.votes -= 1;
-                              ;
                             } else {
                               removeFromArrayField(
                                   "dislikedBy",
@@ -284,7 +283,6 @@ class _CommentCardState extends State<CommentCard> {
                               widget.comment.votes = widget.comment.votes == -1
                                   ? widget.comment.votes += 1
                                   : widget.comment.votes += 1;
-                              ;
                             }
                           });
                         },

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -247,8 +249,9 @@ class _PostCardState extends State<PostCard> {
                 },
                 child: Icon(
                   isBookmarked
-                      ? Icons.bookmark_add_rounded
+                      ? Icons.bookmark_sharp
                       : Icons.bookmark_border_outlined,
+                  color: isBookmarked ? secondaryColor : blackColor,
                 ),
               )
             ],
@@ -294,14 +297,12 @@ class _PostCardState extends State<PostCard> {
                               widget.post.votes = widget.post.votes == -1
                                   ? widget.post.votes += 2
                                   : widget.post.votes += 1;
-                              ;
                             } else {
                               removeFromArrayField("likeby", widget.post.idPost,
                                   currentUser.email!);
                               widget.post.votes = widget.post.votes == 1
                                   ? widget.post.votes -= 1
                                   : widget.post.votes -= 1;
-                              ;
                             }
                           });
                         },
@@ -330,14 +331,12 @@ class _PostCardState extends State<PostCard> {
                               widget.post.votes = widget.post.votes == 1
                                   ? widget.post.votes -= 2
                                   : widget.post.votes -= 1;
-                              ;
                             } else {
                               removeFromArrayField("dislikeby",
                                   widget.post.idPost, currentUser.email!);
                               widget.post.votes = widget.post.votes == -1
                                   ? widget.post.votes += 1
                                   : widget.post.votes += 1;
-                              ;
                             }
                           });
                         },

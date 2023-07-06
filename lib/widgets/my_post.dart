@@ -103,7 +103,7 @@ class _MyPostState extends State<MyPost> {
     return Scaffold(
       backgroundColor: mainColor,
       body: Container(
-        margin: EdgeInsets.only(left: 32, right: 32, top: 20),
+        margin: const EdgeInsets.only(left: 32, right: 32, top: 20),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,

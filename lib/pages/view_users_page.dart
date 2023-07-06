@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:stalkin/theme.dart';
+import 'package:stalkin/widgets/my_bookmark.dart';
 import 'package:stalkin/widgets/not_found_card.dart';
 import 'package:stalkin/widgets/post_card.dart';
 
@@ -141,7 +142,7 @@ class _ViewUsersPageState extends State<ViewUsersPage> {
                 ),
               ),
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                margin: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
                 height: 45,
                 decoration: BoxDecoration(
                   color: whiteColor,
@@ -231,7 +232,7 @@ class _ViewUsersPageState extends State<ViewUsersPage> {
                       ),
                     ),
                     // Bookmark
-                    const Text('bookmark'),
+                    const MyBookmark(),
                   ],
                 ),
               )

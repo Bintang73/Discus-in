@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:stalkin/pages/comment_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -303,8 +305,9 @@ class _BookmarkCardProfileState extends State<BookmarkCardProfile> {
                 },
                 child: Icon(
                   isBookmarked
-                      ? Icons.bookmark_add_rounded
+                      ? Icons.bookmark_sharp
                       : Icons.bookmark_border_outlined,
+                  color: isBookmarked ? secondaryColor : blackColor,
                 ),
               ),
             ],
@@ -353,14 +356,12 @@ class _BookmarkCardProfileState extends State<BookmarkCardProfile> {
                                   widget.post.votes = widget.post.votes == -1
                                       ? widget.post.votes += 2
                                       : widget.post.votes += 1;
-                                  ;
                                 } else {
                                   removeFromArrayField("likeby",
                                       widget.post.idPost, currentUser.email!);
                                   widget.post.votes = widget.post.votes == 1
                                       ? widget.post.votes -= 1
                                       : widget.post.votes -= 1;
-                                  ;
                                 }
                               });
                             },
@@ -389,14 +390,12 @@ class _BookmarkCardProfileState extends State<BookmarkCardProfile> {
                                   widget.post.votes = widget.post.votes == 1
                                       ? widget.post.votes -= 2
                                       : widget.post.votes -= 1;
-                                  ;
                                 } else {
                                   removeFromArrayField("dislikeby",
                                       widget.post.idPost, currentUser.email!);
                                   widget.post.votes = widget.post.votes == -1
                                       ? widget.post.votes += 1
                                       : widget.post.votes += 1;
-                                  ;
                                 }
                               });
                             },

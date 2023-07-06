@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:stalkin/pages/comment_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -247,7 +249,10 @@ class _PostCardProfileState extends State<PostCardProfile> {
                     );
                   });
                 },
-                child: const Icon(Icons.delete),
+                child: Icon(
+                  Icons.delete,
+                  color: secondaryColor,
+                ),
               )
             ],
           ),
@@ -295,14 +300,12 @@ class _PostCardProfileState extends State<PostCardProfile> {
                                   widget.post.votes = widget.post.votes == -1
                                       ? widget.post.votes += 2
                                       : widget.post.votes += 1;
-                                  ;
                                 } else {
                                   removeFromArrayField("likeby",
                                       widget.post.idPost, currentUser.email!);
                                   widget.post.votes = widget.post.votes == 1
                                       ? widget.post.votes -= 1
                                       : widget.post.votes -= 1;
-                                  ;
                                 }
                               });
                             },
@@ -331,14 +334,12 @@ class _PostCardProfileState extends State<PostCardProfile> {
                                   widget.post.votes = widget.post.votes == 1
                                       ? widget.post.votes -= 2
                                       : widget.post.votes -= 1;
-                                  ;
                                 } else {
                                   removeFromArrayField("dislikeby",
                                       widget.post.idPost, currentUser.email!);
                                   widget.post.votes = widget.post.votes == -1
                                       ? widget.post.votes += 1
                                       : widget.post.votes += 1;
-                                  ;
                                 }
                               });
                             },

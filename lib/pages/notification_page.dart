@@ -1,9 +1,12 @@
+// ignore_for_file: avoid_print
+
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/notification.dart';
 import 'package:stalkin/widgets/notification_card.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import '../theme.dart';
+import '../widgets/not_found_card.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({Key? key}) : super(key: key);
@@ -153,6 +156,10 @@ class _NotificationPageState extends State<NotificationPage> {
                 margin: const EdgeInsets.symmetric(horizontal: 32),
                 child: Column(
                   children: [
+                    if (!isLoading && notif.isEmpty)
+                      const NotFoundCard(
+                        deskripsi: 'Belum ada notifikasi.',
+                      ),
                     ...notif
                         .map(
                           (model) => CustomNotification(notification: model),

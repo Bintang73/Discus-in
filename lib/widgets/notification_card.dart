@@ -36,7 +36,7 @@ class CustomNotification extends StatelessWidget {
           children: [
             Expanded(
               child: Text(
-                "${notification.nameUser} - ${notification.content}",
+                "${notification.idTopic} : ${notification.content}",
                 style: regularPoppins.copyWith(fontSize: 12),
                 overflow: TextOverflow.ellipsis,
               ),
