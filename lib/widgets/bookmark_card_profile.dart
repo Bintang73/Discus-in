@@ -5,23 +5,24 @@ import '../models/post.dart';
 import '../theme.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class PostCardProfile extends StatefulWidget {
+class BookmarkCardProfile extends StatefulWidget {
   final Post post;
   final Function(Post) onDelete;
-  const PostCardProfile({
+  const BookmarkCardProfile({
     required this.post,
     required this.onDelete,
     Key? key,
   }) : super(key: key);
 
   @override
-  State<PostCardProfile> createState() => _PostCardProfileState();
+  State<BookmarkCardProfile> createState() => _BookmarkCardProfileState();
 }
 
-class _PostCardProfileState extends State<PostCardProfile> {
+class _BookmarkCardProfileState extends State<BookmarkCardProfile> {
   final currentUser = FirebaseAuth.instance.currentUser!;
   bool isUpvoted = false;
   bool isDownvoted = false;
+  bool isBookmarked = false;
 
   @override
   void initState() {
@@ -33,8 +34,65 @@ class _PostCardProfileState extends State<PostCardProfile> {
             "likeby", widget.post.idPost, currentUser.email!);
         checkStringInArrayField(
             "dislikeby", widget.post.idPost, currentUser.email!);
+        checkBookmarkInArrayField("bookmarkId", widget.post.idPost);
       });
     }
+  }
+
+  void checkBookmarkInArrayField(String fieldName, String documentId) {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(currentUser.email)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        final data = documentSnapshot.data() as Map<String, dynamic>;
+        if (data.containsKey(fieldName) && data[fieldName] is List) {
+          final arrayField = data[fieldName] as List<dynamic>;
+          if (arrayField.contains(documentId)) {
+            setState(() {
+              isBookmarked = true;
+            });
+          } else {
+            setState(() {
+              isBookmarked = false;
+            });
+          }
+        } else {
+          print('Field $fieldName is not an array field in the document.');
+        }
+      } else {
+        print('Document not found.');
+      }
+    }).catchError((error) {
+      print('Failed to search field in array: $error');
+    });
+  }
+
+  void pushBookmarkArrayField(String fieldName, String element) {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(currentUser.email)
+        .update({
+      fieldName: FieldValue.arrayUnion([element]),
+    }).then((value) {
+      print('Bookmark pushed successfully to array field!');
+    }).catchError((error) {
+      print('Bookmark to push element to array field: $error');
+    });
+  }
+
+  void removeBookmarkFromArrayField(String fieldName, String element) {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(currentUser.email)
+        .update({
+      fieldName: FieldValue.arrayRemove([element]),
+    }).then((value) {
+      print('Element removed successfully from array field!');
+    }).catchError((error) {
+      print('Failed to remove element from array field: $error');
+    });
   }
 
   void checkStringInArrayField(
@@ -197,7 +255,7 @@ class _PostCardProfileState extends State<PostCardProfile> {
                         return AlertDialog(
                           title: const Text('Konfirmasi'),
                           content: const Text(
-                              'Apakah Anda yakin ingin menghapus post ini?'),
+                              'Apakah Anda yakin ingin menghapus bookmark ini?'),
                           actions: [
                             TextButton(
                               child: const Text('Batal'),
@@ -207,22 +265,18 @@ class _PostCardProfileState extends State<PostCardProfile> {
                             ),
                             TextButton(
                               child: const Text('Hapus'),
-                              onPressed: () async {
+                              onPressed: () {
                                 try {
-                                  await FirebaseFirestore.instance
-                                      .collection('User Post')
-                                      .doc(widget.post.idPost)
-                                      .delete();
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        'Post deleted successfully',
-                                        style: semiPoppins,
-                                      ),
-                                      backgroundColor: Colors.green,
-                                      duration: const Duration(seconds: 1),
-                                    ),
-                                  );
+                                  if (isBookmarked) {
+                                    isBookmarked = false;
+                                    widget.onDelete(widget.post);
+                                    removeBookmarkFromArrayField(
+                                        "bookmarkId", widget.post.idPost);
+                                  } else {
+                                    isBookmarked = true;
+                                    pushBookmarkArrayField(
+                                        "bookmarkId", widget.post.idPost);
+                                  }
                                   widget.onDelete(widget.post);
                                   Navigator.of(context).pop();
                                 } catch (e) {
@@ -247,8 +301,12 @@ class _PostCardProfileState extends State<PostCardProfile> {
                     );
                   });
                 },
-                child: const Icon(Icons.delete),
-              )
+                child: Icon(
+                  isBookmarked
+                      ? Icons.bookmark_add_rounded
+                      : Icons.bookmark_border_outlined,
+                ),
+              ),
             ],
           ),
           Container(

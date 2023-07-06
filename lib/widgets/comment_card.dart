@@ -237,7 +237,7 @@ class _CommentCardState extends State<CommentCard> {
                                   widget.comment.idComment,
                                   currentUser.email!);
                               widget.comment.votes = widget.comment.votes == 1
-                                  ? widget.comment.votes -= 2
+                                  ? widget.comment.votes -= 1
                                   : widget.comment.votes -= 1;
                               ;
                             }
@@ -282,7 +282,7 @@ class _CommentCardState extends State<CommentCard> {
                                   widget.comment.idComment,
                                   currentUser.email!);
                               widget.comment.votes = widget.comment.votes == -1
-                                  ? widget.comment.votes += 2
+                                  ? widget.comment.votes += 1
                                   : widget.comment.votes += 1;
                               ;
                             }

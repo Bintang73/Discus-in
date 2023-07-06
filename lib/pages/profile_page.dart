@@ -3,9 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:stalkin/pages/setting_page.dart';
 
-import '../models/post.dart';
 import '../theme.dart';
 import '../widgets/my_post.dart';
+import '../widgets/my_bookmark.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -16,86 +16,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   final currentUser = FirebaseAuth.instance.currentUser!;
-  List<Post> posts = [];
   bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    getPost();
-  }
-
-  Future<void> getPost() async {
-    try {
-      CollectionReference postCollection =
-          FirebaseFirestore.instance.collection('User Post');
-      QuerySnapshot<Object?> snapshot = await postCollection
-          .where('email', isEqualTo: currentUser.email)
-          .get();
-
-      if (snapshot.docs.isNotEmpty) {
-        for (int i = 0; i < snapshot.docs.length && i < 20; i++) {
-          String email = snapshot.docs[i].get('email');
-          DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
-              .collection('Users')
-              .doc(email)
-              .get();
-          if (docSnapshot.exists) {
-            int jumlahlike = snapshot.docs[i].get('likeby').length;
-            int jumlahdislike = snapshot.docs[i].get('dislikeby').length;
-            int totallikeanddislike = 0;
-            if (jumlahlike == 0) {
-              totallikeanddislike = jumlahlike - jumlahdislike;
-            } else if (jumlahlike == 0 && jumlahdislike == 0) {
-              totallikeanddislike = 0;
-            } else {
-              totallikeanddislike = jumlahlike;
-            }
-            Map<String, dynamic> data =
-                docSnapshot.data() as Map<String, dynamic>;
-            String name = data['name'];
-            String userUrlProfile = data['urlProfile'];
-            String userContent = snapshot.docs[i].get('postingan');
-            String getDocId = snapshot.docs[i].id;
-            String getTopic = snapshot.docs[i].get('kategori');
-            int jumlahvote = totallikeanddislike;
-            int userTimestamp = snapshot.docs[i].get('timestamp');
-            posts.add(
-              Post(
-                idPost: getDocId,
-                idTopic: getTopic,
-                profileUser: userUrlProfile,
-                nameUser: name,
-                content: userContent,
-                votes: jumlahvote,
-                timestamp: userTimestamp,
-              ),
-            );
-          }
-        }
-      }
-      setState(() {
-        isLoading = false;
-      });
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            e.toString(),
-            style: semiPoppins,
-          ),
-          backgroundColor: Colors.red,
-          duration: const Duration(seconds: 1),
-        ),
-      );
-    }
-  }
-
-  void deletePost(Post post) {
-    setState(() {
-      posts.remove(post);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -316,7 +237,7 @@ class _ProfilePageState extends State<ProfilePage> {
           body: const TabBarView(
             children: [
               MyPost(),
-              Text('Bookmark'),
+              MyBookmark(),
             ],
           ),
         ),
