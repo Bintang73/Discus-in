@@ -35,6 +35,16 @@ class _TopicPostPageState extends State<TopicPostPage> {
       if (snapshot.docs.isNotEmpty) {
         for (int i = 0; i < snapshot.docs.length && i < 20; i++) {
           String email = snapshot.docs[i].get('email');
+          int jumlahlike = snapshot.docs[i].get('likeby').length;
+          int jumlahdislike = snapshot.docs[i].get('dislikeby').length;
+          int totallikeanddislike = 0;
+          if (jumlahlike == 0) {
+            totallikeanddislike = jumlahlike - jumlahdislike;
+          } else if (jumlahlike == 0 && jumlahdislike == 0) {
+            totallikeanddislike = 0;
+          } else {
+            totallikeanddislike = jumlahlike;
+          }
           DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
               .collection('Users')
               .doc(email)
@@ -48,7 +58,7 @@ class _TopicPostPageState extends State<TopicPostPage> {
             String getDocId = snapshot.docs[i].id;
             String getTopic = snapshot.docs[i].get('kategori');
             int userCommentCount = snapshot.docs[i].get('commentCount');
-            int likeCount = snapshot.docs[i].get('likeby').length;
+            int likeCount = totallikeanddislike;
             int userTimestamp = snapshot.docs[i].get('timestamp');
             posts.add(
               Post(

@@ -75,11 +75,7 @@ class _PostCardState extends State<PostCard> {
   }
 
   void pushToArrayField(String fieldName, String documentId, String element) {
-    FirebaseFirestore.instance
-        .collection(
-            'User Post') // Replace 'your_collection' with the actual collection name
-        .doc(documentId) // Replace documentId with the ID of the document
-        .update({
+    FirebaseFirestore.instance.collection('User Post').doc(documentId).update({
       fieldName: FieldValue.arrayUnion([element]),
     }).then((value) {
       print('Element pushed successfully to array field!');
@@ -90,11 +86,7 @@ class _PostCardState extends State<PostCard> {
 
   void removeFromArrayField(
       String fieldName, String documentId, String element) {
-    FirebaseFirestore.instance
-        .collection(
-            'User Post') // Replace 'your_collection' with the actual collection name
-        .doc(documentId) // Replace documentId with the ID of the document
-        .update({
+    FirebaseFirestore.instance.collection('User Post').doc(documentId).update({
       fieldName: FieldValue.arrayRemove([element]),
     }).then((value) {
       print('Element removed successfully from array field!');

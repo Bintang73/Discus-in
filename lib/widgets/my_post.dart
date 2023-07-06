@@ -42,6 +42,16 @@ class _MyPostState extends State<MyPost> {
               .doc(email)
               .get();
           if (docSnapshot.exists) {
+            int jumlahlike = snapshot.docs[i].get('likeby').length;
+            int jumlahdislike = snapshot.docs[i].get('dislikeby').length;
+            int totallikeanddislike = 0;
+            if (jumlahlike == 0) {
+              totallikeanddislike = jumlahlike - jumlahdislike;
+            } else if (jumlahlike == 0 && jumlahdislike == 0) {
+              totallikeanddislike = 0;
+            } else {
+              totallikeanddislike = jumlahlike;
+            }
             Map<String, dynamic> data =
                 docSnapshot.data() as Map<String, dynamic>;
             String name = data['name'];
@@ -49,7 +59,7 @@ class _MyPostState extends State<MyPost> {
             String userContent = snapshot.docs[i].get('postingan');
             String getDocId = snapshot.docs[i].id;
             String getTopic = snapshot.docs[i].get('kategori');
-            int userCommentCount = snapshot.docs[i].get('commentCount');
+            int jumlahvote = totallikeanddislike;
             int userTimestamp = snapshot.docs[i].get('timestamp');
             posts.add(
               Post(
@@ -58,7 +68,7 @@ class _MyPostState extends State<MyPost> {
                 profileUser: userUrlProfile,
                 nameUser: name,
                 content: userContent,
-                votes: userCommentCount,
+                votes: jumlahvote,
                 timestamp: userTimestamp,
               ),
             );

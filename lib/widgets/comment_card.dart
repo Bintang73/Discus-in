@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/comment.dart';
 import '../theme.dart';
 
@@ -7,15 +9,106 @@ class CommentCard extends StatefulWidget {
   final String name;
   final String urlProfile;
 
-  const CommentCard(this.comment, {super.key, required this.name, required this.urlProfile});
+  const CommentCard(this.comment,
+      {super.key, required this.name, required this.urlProfile});
 
   @override
   State<CommentCard> createState() => _CommentCardState();
 }
 
 class _CommentCardState extends State<CommentCard> {
+  final currentUser = FirebaseAuth.instance.currentUser!;
   bool isUpvoted = false;
   bool isDownvoted = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (currentUser.email != null) {
+      setState(() {
+        checkStringInArrayField("likedBy", widget.comment.idPost,
+            widget.comment.idComment, currentUser.email!);
+        checkStringInArrayField("dislikedBy", widget.comment.idPost,
+            widget.comment.idComment, currentUser.email!);
+      });
+    }
+  }
+
+  void checkStringInArrayField(String fieldName, String documentId,
+      String commentId, String searchString) {
+    FirebaseFirestore.instance
+        .collection('User Post')
+        .doc(documentId)
+        .collection('Comments')
+        .doc(commentId)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        final data = documentSnapshot.data() as Map<String, dynamic>;
+        if (data.containsKey(fieldName) && data[fieldName] is List) {
+          final arrayField = data[fieldName] as List<dynamic>;
+          if (arrayField.contains(searchString)) {
+            setState(() {
+              if (fieldName == "likedBy") {
+                isUpvoted = true;
+                isDownvoted = false;
+              } else {
+                isUpvoted = false;
+                isDownvoted = true;
+              }
+              print('String found in array field!');
+            });
+          } else {
+            setState(() {
+              if (fieldName == "likedBy") {
+                isUpvoted = false;
+              } else {
+                isDownvoted = false;
+              }
+            });
+          }
+        } else {
+          print('Field $fieldName is not an array field in the document.');
+        }
+      } else {
+        print('Document not found.');
+      }
+    }).catchError((error) {
+      print('Failed to search field in array: $error');
+    });
+  }
+
+  void pushToArrayField(
+      String fieldName, String documentId, String commentId, String element) {
+    FirebaseFirestore.instance
+        .collection('User Post')
+        .doc(documentId)
+        .collection('Comments')
+        .doc(commentId)
+        .update({
+      fieldName: FieldValue.arrayUnion([element]),
+    }).then((value) {
+      print('Element pushed successfully to array field!');
+    }).catchError((error) {
+      print('Failed to push element to array field: $error');
+    });
+  }
+
+  void removeFromArrayField(
+      String fieldName, String documentId, String commentId, String element) {
+    FirebaseFirestore.instance
+        .collection('User Post')
+        .doc(documentId)
+        .collection('Comments')
+        .doc(commentId)
+        .update({
+      fieldName: FieldValue.arrayRemove([element]),
+    }).then((value) {
+      print('Element removed successfully from array field!');
+    }).catchError((error) {
+      print('Failed to remove element from array field: $error');
+    });
+  }
 
   String _getMonth(int month) {
     switch (month) {
@@ -125,10 +218,28 @@ class _CommentCardState extends State<CommentCard> {
                           setState(() {
                             isUpvoted = !isUpvoted;
                             isDownvoted = false; // Reset the downvote state
+                            removeFromArrayField(
+                                "dislikedBy",
+                                widget.comment.idPost,
+                                widget.comment.idComment,
+                                currentUser.email!);
                             if (isUpvoted) {
-                              widget.comment.votes++;
+                              pushToArrayField("likedBy", widget.comment.idPost,
+                                  widget.comment.idComment, currentUser.email!);
+                              widget.comment.votes = widget.comment.votes == -1
+                                  ? widget.comment.votes += 2
+                                  : widget.comment.votes += 1;
+                              ;
                             } else {
-                              widget.comment.votes--;
+                              removeFromArrayField(
+                                  "likedBy",
+                                  widget.comment.idPost,
+                                  widget.comment.idComment,
+                                  currentUser.email!);
+                              widget.comment.votes = widget.comment.votes == 1
+                                  ? widget.comment.votes -= 2
+                                  : widget.comment.votes -= 1;
+                              ;
                             }
                           });
                         },
@@ -149,10 +260,31 @@ class _CommentCardState extends State<CommentCard> {
                           setState(() {
                             isDownvoted = !isDownvoted;
                             isUpvoted = false; // Reset the upvote state
+                            removeFromArrayField(
+                                "likedBy",
+                                widget.comment.idPost,
+                                widget.comment.idComment,
+                                currentUser.email!);
                             if (isDownvoted) {
-                              widget.comment.votes--;
+                              pushToArrayField(
+                                  "dislikedBy",
+                                  widget.comment.idPost,
+                                  widget.comment.idComment,
+                                  currentUser.email!);
+                              widget.comment.votes = widget.comment.votes == 1
+                                  ? widget.comment.votes -= 2
+                                  : widget.comment.votes -= 1;
+                              ;
                             } else {
-                              widget.comment.votes++;
+                              removeFromArrayField(
+                                  "dislikedBy",
+                                  widget.comment.idPost,
+                                  widget.comment.idComment,
+                                  currentUser.email!);
+                              widget.comment.votes = widget.comment.votes == -1
+                                  ? widget.comment.votes += 2
+                                  : widget.comment.votes += 1;
+                              ;
                             }
                           });
                         },

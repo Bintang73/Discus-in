@@ -58,7 +58,6 @@ class _CommentPageState extends State<CommentPage> {
     newCommentRef.set({
       'likedBy': [],
       'dislikedBy': [],
-      'votes': 0,
       'idComment': newCommentRef.id, // Use the ID of the new comment document
       'idPost': widget.idPost,
       'idTopic': widget.idTopic,
@@ -107,12 +106,23 @@ class _CommentPageState extends State<CommentPage> {
                   children: snapshot.data!.docs.map((doc) {
                     final commentData = doc.data() as Map<String, dynamic>;
 
+                    int jumlahlike = commentData['likedBy'].length;
+                    int jumlahdislike = commentData['dislikedBy'].length;
+                    int totallikeanddislike = 0;
+                    if (jumlahlike == 0) {
+                      totallikeanddislike = jumlahlike - jumlahdislike;
+                    } else if (jumlahlike == 0 && jumlahdislike == 0) {
+                      totallikeanddislike = 0;
+                    } else {
+                      totallikeanddislike = jumlahlike;
+                    }
+
                     return CommentCard(
                       Comment(
                         idComment: commentData['idComment'],
                         idPost: commentData['idPost'],
                         content: commentData['CommentText'],
-                        votes: commentData['votes'],
+                        votes: totallikeanddislike,
                         timeStamp: commentData['CommentTime'],
                       ),
                       name: commentData['CommentedBy'],
