@@ -63,14 +63,14 @@ class _MyPostState extends State<MyPost> {
             int userTimestamp = snapshot.docs[i].get('timestamp');
             posts.add(
               Post(
-                idPost: getDocId,
-                idTopic: getTopic,
-                profileUser: userUrlProfile,
-                nameUser: name,
-                content: userContent,
-                votes: jumlahvote,
-                timestamp: userTimestamp,
-              ),
+                  idPost: getDocId,
+                  idTopic: getTopic,
+                  profileUser: userUrlProfile,
+                  nameUser: name,
+                  content: userContent,
+                  votes: jumlahvote,
+                  timestamp: userTimestamp,
+                  originalpost: userContent),
             );
           }
         }

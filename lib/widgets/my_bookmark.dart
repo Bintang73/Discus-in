@@ -72,14 +72,14 @@ class _MyBookmarkState extends State<MyBookmark> {
           int userTimestamp = dataBookmark['timestamp'];
           posts.add(
             Post(
-              idPost: getDocId,
-              idTopic: getTopic,
-              profileUser: userUrlProfile,
-              nameUser: name,
-              content: userContent,
-              votes: jumlahvote,
-              timestamp: userTimestamp,
-            ),
+                idPost: getDocId,
+                idTopic: getTopic,
+                profileUser: userUrlProfile,
+                nameUser: name,
+                content: userContent,
+                votes: jumlahvote,
+                timestamp: userTimestamp,
+                originalpost: userContent),
           );
         }
       }

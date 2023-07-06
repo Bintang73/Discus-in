@@ -6,6 +6,7 @@ class Post {
   String content;
   int votes;
   int timestamp;
+  String originalpost;
 
   Post({
     required this.idPost,
@@ -15,5 +16,6 @@ class Post {
     required this.content,
     required this.votes,
     required this.timestamp,
+    required this.originalpost,
   });
 }

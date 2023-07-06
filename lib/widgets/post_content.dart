@@ -16,6 +16,7 @@ class _PostContentState extends State<PostContent> {
   final currentUser = FirebaseAuth.instance.currentUser!;
   bool isUpvoted = false;
   bool isDownvoted = false;
+  bool isBookmarked = false;
 
   @override
   void initState() {
@@ -26,8 +27,65 @@ class _PostContentState extends State<PostContent> {
             "likeby", widget.post.idPost, currentUser.email!);
         checkStringInArrayField(
             "dislikeby", widget.post.idPost, currentUser.email!);
+        checkBookmarkInArrayField("bookmarkId", widget.post.idPost);
       });
     }
+  }
+
+  void checkBookmarkInArrayField(String fieldName, String documentId) {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(currentUser.email)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        final data = documentSnapshot.data() as Map<String, dynamic>;
+        if (data.containsKey(fieldName) && data[fieldName] is List) {
+          final arrayField = data[fieldName] as List<dynamic>;
+          if (arrayField.contains(documentId)) {
+            setState(() {
+              isBookmarked = true;
+            });
+          } else {
+            setState(() {
+              isBookmarked = false;
+            });
+          }
+        } else {
+          print('Field $fieldName is not an array field in the document.');
+        }
+      } else {
+        print('Document not found.');
+      }
+    }).catchError((error) {
+      print('Failed to search field in array: $error');
+    });
+  }
+
+  void pushBookmarkArrayField(String fieldName, String element) {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(currentUser.email)
+        .update({
+      fieldName: FieldValue.arrayUnion([element]),
+    }).then((value) {
+      print('Bookmark pushed successfully to array field!');
+    }).catchError((error) {
+      print('Bookmark to push element to array field: $error');
+    });
+  }
+
+  void removeBookmarkFromArrayField(String fieldName, String element) {
+    FirebaseFirestore.instance
+        .collection('Users')
+        .doc(currentUser.email)
+        .update({
+      fieldName: FieldValue.arrayRemove([element]),
+    }).then((value) {
+      print('Element removed successfully from array field!');
+    }).catchError((error) {
+      print('Failed to remove element from array field: $error');
+    });
   }
 
   void checkStringInArrayField(
@@ -172,7 +230,25 @@ class _PostContentState extends State<PostContent> {
                   ),
                 ],
               ),
-              const Icon(Icons.bookmark_border_outlined)
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    if (isBookmarked) {
+                      isBookmarked = false;
+                      removeBookmarkFromArrayField(
+                          "bookmarkId", widget.post.idPost);
+                    } else {
+                      isBookmarked = true;
+                      pushBookmarkArrayField("bookmarkId", widget.post.idPost);
+                    }
+                  });
+                },
+                child: Icon(
+                  isBookmarked
+                      ? Icons.bookmark_add_rounded
+                      : Icons.bookmark_border_outlined,
+                ),
+              )
             ],
           ),
           Container(
@@ -183,7 +259,7 @@ class _PostContentState extends State<PostContent> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text(
-                      widget.post.content,
+                      widget.post.originalpost,
                       style: regularPoppins.copyWith(fontSize: 12),
                     ),
                   ),

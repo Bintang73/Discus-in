@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:stalkin/models/notification.dart';
 import 'package:stalkin/widgets/notification_card.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../theme.dart';
 
 class NotificationPage extends StatefulWidget {
-  const NotificationPage({super.key});
+  const NotificationPage({Key? key}) : super(key: key);
 
   @override
   State<NotificationPage> createState() => _NotificationPageState();
@@ -12,6 +14,100 @@ class NotificationPage extends StatefulWidget {
 
 class _NotificationPageState extends State<NotificationPage> {
   final balas = TextEditingController();
+  List<NotificationModel> notif = [];
+  final currentUser = FirebaseAuth.instance.currentUser!;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    getPost();
+  }
+
+  Future<void> getPost() async {
+    try {
+      CollectionReference postCollection =
+          FirebaseFirestore.instance.collection('User Post');
+      QuerySnapshot<Object?> snapshot = await postCollection
+          .where('email', isEqualTo: currentUser.email)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+        for (int i = 0; i < snapshot.docs.length && i < 20; i++) {
+          String originalContent = snapshot.docs[i].get('postingan');
+          String email = snapshot.docs[i].get('email');
+
+          DocumentSnapshot docSnapshot = await FirebaseFirestore.instance
+              .collection('Users')
+              .doc(email)
+              .get();
+          if (docSnapshot.exists) {
+            String getDocId = snapshot.docs[i].id;
+
+            CollectionReference filterComment =
+                FirebaseFirestore.instance.collection('User Post');
+            QuerySnapshot<Object?> snapComment = await filterComment
+                .doc(getDocId)
+                .collection('Comments')
+                .orderBy('CommentTime', descending: false)
+                .get();
+
+            if (snapComment.docs.isNotEmpty) {
+              for (int j = 0; j < snapComment.docs.length && j < 20; j++) {
+                int jumlahlike = snapComment.docs[j].get('likedBy').length;
+                int jumlahdislike =
+                    snapComment.docs[j].get('dislikedBy').length;
+                int totallikeanddislike = 0;
+                if (jumlahlike == 0) {
+                  totallikeanddislike = jumlahlike - jumlahdislike;
+                } else if (jumlahlike == 0 && jumlahdislike == 0) {
+                  totallikeanddislike = 0;
+                } else {
+                  totallikeanddislike = jumlahlike;
+                }
+                Map<String, dynamic> data =
+                    docSnapshot.data() as Map<String, dynamic>;
+                String name = data['name'];
+                String userUrlProfile = data['urlProfile'];
+                String userContent = snapComment.docs[j].get('CommentText');
+                String getTopic = snapComment.docs[j].get('idTopic');
+                int jumlahvote = totallikeanddislike;
+                int userTimestamp = snapComment.docs[j].get('CommentTime');
+
+                notif.add(
+                  NotificationModel(
+                      idPost: getDocId,
+                      idTopic: getTopic,
+                      profileUser: userUrlProfile,
+                      nameUser: name,
+                      content: userContent,
+                      votes: jumlahvote,
+                      timestamp: userTimestamp,
+                      originalpost: originalContent),
+                );
+              }
+            }
+          }
+        }
+      }
+      setState(() {
+        isLoading = false;
+      });
+    } catch (e) {
+      print(e);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            e.toString(),
+            style: semiPoppins,
+          ),
+          backgroundColor: Colors.red,
+          duration: const Duration(seconds: 1),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,22 +153,14 @@ class _NotificationPageState extends State<NotificationPage> {
                 margin: const EdgeInsets.symmetric(horizontal: 32),
                 child: Column(
                   children: [
-                    NotificationUser(
-                      Notifications(
-                        idNotif: 1,
-                        message: 'Ada yang berkomentar!',
-                      ),
-                    ),
-                    NotificationUser(
-                      Notifications(
-                        idNotif: 2,
-                        message: 'Ada yang berkomentar!',
-                      ),
-                    ),
+                    ...notif
+                        .map(
+                          (model) => CustomNotification(notification: model),
+                        )
+                        .toList(),
                   ],
                 ),
               ),
-
               // Add your remaining ListView children here
             ]),
           ),

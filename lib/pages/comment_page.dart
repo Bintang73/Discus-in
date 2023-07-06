@@ -16,6 +16,7 @@ class CommentPage extends StatefulWidget {
   final String idTopic;
   final String profileUser;
   final int timestamp;
+  final String originalpost;
 
   const CommentPage({
     Key? key,
@@ -26,6 +27,7 @@ class CommentPage extends StatefulWidget {
     required this.idTopic,
     required this.profileUser,
     required this.timestamp,
+    required this.originalpost,
   }) : super(key: key);
 
   @override
@@ -77,14 +79,14 @@ class _CommentPageState extends State<CommentPage> {
           children: [
             PostContent(
               Post(
-                idPost: widget.idPost,
-                idTopic: widget.idTopic,
-                profileUser: widget.profileUser,
-                nameUser: widget.name,
-                content: widget.content,
-                votes: widget.votes,
-                timestamp: widget.timestamp,
-              ),
+                  idPost: widget.idPost,
+                  idTopic: widget.idTopic,
+                  profileUser: widget.profileUser,
+                  nameUser: widget.name,
+                  content: widget.content,
+                  votes: widget.votes,
+                  timestamp: widget.timestamp,
+                  originalpost: widget.originalpost),
             ),
             StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance

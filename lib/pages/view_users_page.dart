@@ -4,10 +4,8 @@ import 'package:shimmer/shimmer.dart';
 import 'package:stalkin/theme.dart';
 import 'package:stalkin/widgets/not_found_card.dart';
 import 'package:stalkin/widgets/post_card.dart';
-import 'package:stalkin/widgets/title.dart';
 
 import '../models/post.dart';
-import '../widgets/my_post.dart';
 
 class ViewUsersPage extends StatefulWidget {
   final String urlProfile;
@@ -55,14 +53,14 @@ class _ViewUsersPageState extends State<ViewUsersPage> {
             int userTimestamp = snapshot.docs[i].get('timestamp');
             posts.add(
               Post(
-                idPost: getDocId,
-                idTopic: getTopic,
-                profileUser: userUrlProfile,
-                nameUser: name,
-                content: userContent,
-                votes: userCommentCount,
-                timestamp: userTimestamp,
-              ),
+                  idPost: getDocId,
+                  idTopic: getTopic,
+                  profileUser: userUrlProfile,
+                  nameUser: name,
+                  content: userContent,
+                  votes: userCommentCount,
+                  timestamp: userTimestamp,
+                  originalpost: userContent),
             );
           }
         }
@@ -183,7 +181,8 @@ class _ViewUsersPageState extends State<ViewUsersPage> {
                                       height: 180,
                                       decoration: BoxDecoration(
                                           color: Colors.grey,
-                                          borderRadius: BorderRadius.circular(12)),
+                                          borderRadius:
+                                              BorderRadius.circular(12)),
                                     ),
                                   ),
                                 ),
@@ -197,7 +196,8 @@ class _ViewUsersPageState extends State<ViewUsersPage> {
                                       height: 180,
                                       decoration: BoxDecoration(
                                           color: Colors.grey,
-                                          borderRadius: BorderRadius.circular(12)),
+                                          borderRadius:
+                                              BorderRadius.circular(12)),
                                     ),
                                   ),
                                 ),
@@ -211,7 +211,8 @@ class _ViewUsersPageState extends State<ViewUsersPage> {
                                       height: 180,
                                       decoration: BoxDecoration(
                                           color: Colors.grey,
-                                          borderRadius: BorderRadius.circular(12)),
+                                          borderRadius:
+                                              BorderRadius.circular(12)),
                                     ),
                                   ),
                                 ),

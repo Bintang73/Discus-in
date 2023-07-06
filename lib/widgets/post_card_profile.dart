@@ -364,6 +364,7 @@ class _PostCardProfileState extends State<PostCardProfile> {
                       idTopic: widget.post.idTopic,
                       profileUser: widget.post.profileUser,
                       timestamp: widget.post.timestamp,
+                      originalpost: widget.post.content,
                     );
                   }));
                 },

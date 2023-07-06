@@ -4,10 +4,13 @@ import 'package:stalkin/pages/comment_page.dart';
 
 import '../theme.dart';
 
-class NotificationUser extends StatelessWidget {
-  final Notifications notif;
-  const NotificationUser(this.notif, {super.key});
+class CustomNotification extends StatelessWidget {
+  final NotificationModel notification;
 
+  const CustomNotification({
+    required this.notification,
+    Key? key,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -31,25 +34,25 @@ class NotificationUser extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                Text(
-                  notif.message,
-                  style: regularPoppins.copyWith(fontSize: 13),
-                ),
-              ],
+            Expanded(
+              child: Text(
+                "${notification.nameUser} - ${notification.content}",
+                style: regularPoppins.copyWith(fontSize: 12),
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
             GestureDetector(
               onTap: () {
                 Navigator.push(context, MaterialPageRoute(builder: (context) {
                   return CommentPage(
-                    name: "ok",
-                    content: "ok",
-                    votes: 1,
-                    idPost: '1',
-                    idTopic: '2',
-                    profileUser: "https://api.multiavatar.com/nizar.png",
-                    timestamp: 1688127705,
+                    name: notification.nameUser,
+                    content: notification.content,
+                    votes: notification.votes,
+                    idPost: notification.idPost,
+                    idTopic: notification.idTopic,
+                    profileUser: notification.profileUser,
+                    timestamp: notification.timestamp,
+                    originalpost: notification.originalpost,
                   );
                 }));
               },
